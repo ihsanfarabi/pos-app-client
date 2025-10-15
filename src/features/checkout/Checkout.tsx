@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -138,7 +137,7 @@ export default function Checkout() {
               <div className="relative flex-1">
                 <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  className="h-12 rounded-xl border-0 bg-background pl-12 text-base shadow-sm"
+                  className="h-12 rounded-xl border border-border/40 bg-background/95 pl-12 text-base shadow focus-visible:ring-2 focus-visible:ring-primary/30"
                   placeholder="Search items"
                   aria-label="Search menu"
                 />
@@ -163,7 +162,7 @@ export default function Checkout() {
               ))}
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-3 gap-4">
               {products.map((product) => (
                 <Card
                   key={product.id}
@@ -176,31 +175,26 @@ export default function Checkout() {
                       handleProductClick(product.id);
                     }
                   }}
-                  className="flex h-full cursor-pointer flex-col justify-between rounded-2xl border border-border/70 bg-background/80 transition hover:border-primary/60 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+                  className="group flex h-full cursor-pointer flex-col justify-between rounded-2xl border border-border/50 bg-background transition hover:border-primary/40 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
-                  <CardHeader className="space-y-2 pb-0">
-                    <CardTitle className="text-lg font-semibold">
+                  <div className="relative h-40 overflow-hidden rounded-t-2xl bg-muted/30 transition group-hover:brightness-[1.03]">
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <CardHeader className="space-y-1 px-5 pt-4 pb-1">
+                    <CardTitle className="text-lg font-semibold leading-tight">
                       {product.name}
                     </CardTitle>
-                    <CardDescription>{product.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="flex flex-1 flex-col pt-4">
-                    <div className="flex flex-1 flex-col justify-end gap-4">
-                      <div className="relative h-36 overflow-hidden rounded-xl border border-border/60 bg-muted/30">
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="h-full w-full object-cover"
-                          loading="lazy"
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-1">
-                          <p className="text-lg font-semibold">
-                            {currencyFormatter.format(product.price)}
-                          </p>
-                        </div>
-                      </div>
+                  <CardContent className="flex flex-1 flex-col justify-end px-5 pb-5 pt-3">
+                    <div className="flex items-baseline justify-between">
+                      <p className="text-lg font-semibold">
+                        {currencyFormatter.format(product.price)}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -228,7 +222,7 @@ export default function Checkout() {
                 {cartItems.map((item) => (
                   <div
                     key={item.id}
-                    className="rounded-2xl border border-border/60 bg-background/80 p-4 shadow-sm"
+                    className="rounded-2xl border border-border/45 bg-background/90 p-4 shadow-sm"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -271,7 +265,7 @@ export default function Checkout() {
               </div>
             </div>
 
-            <div className="space-y-3 rounded-2xl border border-border/60 bg-background/80 p-4">
+            <div className="space-y-3 rounded-2xl border border-border/50 bg-background p-4 shadow-sm">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-semibold">
