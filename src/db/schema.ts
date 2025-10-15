@@ -39,12 +39,21 @@ export interface Mapping {
   serverTicketId?: string;
 }
 
+export interface DeviceSettings {
+  id: string;
+  tenantId?: string;
+  storeId?: string;
+  deviceId?: string;
+  businessDate?: string;
+}
+
 export class PosDB extends Dexie {
   menu_cache!: Table<MenuItem, string>;
   local_tickets!: Table<LocalTicket, string>;
   local_lines!: Table<LocalLine, string>;
   outbox!: Table<Outbox, string>;
   mapping!: Table<Mapping, string>;
+  device_settings!: Table<DeviceSettings, string>;
 
   constructor() {
     super('posdb');
@@ -54,6 +63,7 @@ export class PosDB extends Dexie {
       local_lines: 'id, localTicketId, menuItemId',
       outbox: 'id, kind, key, localTicketId, partId, ts',
       mapping: 'localTicketId',
+      device_settings: 'id',
     });
   }
 }

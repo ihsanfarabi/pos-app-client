@@ -3,15 +3,35 @@ import { mapRepo } from '@/db/repositories/mappingRepo';
 import { ticketsRepo } from '@/db/repositories/ticketRepo';
 import { ticketWriteRest } from '@/services/api/adapters/rest';
 import type { TicketLinePayload } from '@/services/api/ports';
+import { makeCommandKey } from '@/lib/idempotency';
 
 const FLUSH_INTERVAL_MS = 3000;
 
-type NewOutboxCommand = Omit<Outbox, 'tries' | 'ts' | 'lastError'> &
-  Partial<Pick<Outbox, 'lastError'>>;
+type NewOutboxCommand = Omit<Outbox, 'key' | 'tries' | 'ts' | 'lastError'> & {
+  entityId?: string;
+  version?: number;
+  businessDateOverride?: string;
+};
 
 export async function enqueue(command: NewOutboxCommand) {
+  const {
+    entityId,
+    version,
+    businessDateOverride,
+    ...rest
+  } = command;
+
+  const key = makeCommandKey({
+    command: rest.kind,
+    entityId: entityId ?? rest.localTicketId,
+    part: rest.partId,
+    version,
+    businessDateOverride,
+  });
+
   await db.outbox.put({
-    ...command,
+    ...rest,
+    key,
     tries: 0,
     ts: new Date().toISOString(),
   });
