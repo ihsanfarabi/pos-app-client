@@ -17,7 +17,7 @@ export default function Login() {
     try {
       const response = await authRest.login(email, password);
       setToken(response.access_token);
-      navigate('/sell');
+      navigate('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
