@@ -184,20 +184,22 @@ export default function Checkout() {
                     </CardTitle>
                     <CardDescription>{product.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="flex flex-1 flex-col gap-4 pt-4">
-                    <div className="relative h-36 overflow-hidden rounded-xl border border-border/60 bg-muted/30">
-                      <img
-                        src={product.imageUrl}
-                        alt={product.name}
-                        className="h-full w-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <p className="text-lg font-semibold">
-                          {currencyFormatter.format(product.price)}
-                        </p>
+                  <CardContent className="flex flex-1 flex-col pt-4">
+                    <div className="flex flex-1 flex-col justify-end gap-4">
+                      <div className="relative h-36 overflow-hidden rounded-xl border border-border/60 bg-muted/30">
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <p className="text-lg font-semibold">
+                            {currencyFormatter.format(product.price)}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </CardContent>

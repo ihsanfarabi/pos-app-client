@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import Login from '@/features/login/Login';
 import Settings from '@/features/settings/Settings';
 import Tickets from '@/features/tickets/Tickets';
-import Checkout from '@/features/pos/Checkout';
+import Checkout from '@/features/checkout/Checkout';
 
 export default function App() {
   return (
