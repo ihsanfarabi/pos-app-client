@@ -1,4 +1,4 @@
-import { Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -10,13 +10,8 @@ const navItems = [
 ];
 
 export default function Layout() {
-  const accessToken = useSession((state) => state.accessToken);
   const setToken = useSession((state) => state.setToken);
   const navigate = useNavigate();
-
-  if (!accessToken) {
-    return <Navigate to="/login" replace />;
-  }
 
   function handleLogout() {
     setToken(undefined);
