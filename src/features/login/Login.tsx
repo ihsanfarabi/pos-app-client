@@ -1,7 +1,11 @@
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authRest } from '@/services/api/adapters/auth.rest';
 import { useSession } from '@/stores/session';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,36 +29,58 @@ export default function Login() {
     }
   }
 
+  function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void handleSubmit();
+  }
+
   return (
-    <div className="p-6 max-w-sm mx-auto">
-      <h1 className="text-xl font-semibold mb-4">Login</h1>
-      <input
-        className="border p-2 mb-2 w-full"
-        placeholder="Email"
-        autoComplete="email"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-      />
-      <input
-        className="border p-2 mb-4 w-full"
-        placeholder="Password"
-        type="password"
-        autoComplete="current-password"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-      />
-      {error ? (
-        <p className="text-sm text-red-600 mb-2" role="alert">
-          {error}
-        </p>
-      ) : null}
-      <button
-        className="bg-black text-white px-4 py-2 rounded disabled:opacity-50"
-        onClick={handleSubmit}
-        disabled={submitting}
-      >
-        {submitting ? 'Signing in…' : 'Sign in'}
-      </button>
+    <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Sign in</CardTitle>
+          <CardDescription>Enter your credentials to access POS.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="space-y-4" onSubmit={handleFormSubmit}>
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="email">
+                Email
+              </label>
+              <Input
+                id="email"
+                placeholder="you@example.com"
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                disabled={submitting}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="password">
+                Password
+              </label>
+              <Input
+                id="password"
+                placeholder="••••••••"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                disabled={submitting}
+              />
+            </div>
+            {error ? (
+              <p className="text-sm text-destructive" role="alert">
+                {error}
+              </p>
+            ) : null}
+            <Button type="submit" className="w-full" disabled={submitting}>
+              {submitting ? 'Signing in…' : 'Sign in'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
