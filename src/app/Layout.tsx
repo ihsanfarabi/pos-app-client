@@ -6,7 +6,6 @@ import { useSession } from '@/stores/session';
 
 const navItems = [
   { to: '/tickets', label: 'Tickets' },
-  { to: '/settings', label: 'Settings' },
 ];
 
 export default function Layout() {
