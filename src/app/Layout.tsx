@@ -1,8 +1,10 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useSession } from '@/stores/session';
+import { authRest } from '@/services/api/adapters/auth.rest';
 
 const navItems = [
   { to: '/tickets', label: 'Tickets' },
@@ -11,10 +13,18 @@ const navItems = [
 export default function Layout() {
   const setToken = useSession((state) => state.setToken);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  function handleLogout() {
-    setToken(undefined);
-    navigate('/login', { replace: true });
+  async function handleLogout() {
+    try {
+      await authRest.logout();
+    } catch {
+      // ignore logout errors
+    } finally {
+      queryClient.clear();
+      setToken(undefined);
+      navigate('/login', { replace: true });
+    }
   }
 
   return (
