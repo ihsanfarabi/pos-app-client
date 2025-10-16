@@ -1,32 +1,28 @@
 import { useSession } from '@/stores/session';
 
-export type IdempotencyParams = {
-  tenantId: string;
-  storeId: string;
+export type CommandName = 'CreateTicket' | 'AddLine' | 'PayCash' | 'PayMock';
+
+export type DeviceKeyParams = {
   deviceId: string;
   businessDate: string;
-  command: 'CreateTicket' | 'AddLine' | 'PayCash' | 'PayMock';
+  command: CommandName;
   entityId: string;
   part?: string;
   v?: number;
 };
 
-export function makeKey({
-  tenantId,
-  storeId,
+export function makeDeviceKey({
   deviceId,
   businessDate,
   command,
   entityId,
   part,
   v = 1,
-}: IdempotencyParams) {
-  return `${tenantId}:${storeId}:${deviceId}:${businessDate}:${command}:${entityId}:${part ?? '-'}:v${v}`;
+}: DeviceKeyParams) {
+  return `${deviceId}:${businessDate}:${command}:${entityId}:${part ?? '-'}:v${v}`;
 }
 
 export type DeviceContext = {
-  tenantId: string;
-  storeId: string;
   deviceId: string;
   businessDate: string;
 };
@@ -40,12 +36,6 @@ export function getDeviceContext(): DeviceContext {
   const state = useSession.getState();
   const missing: string[] = [];
 
-  if (!state.tenantId) {
-    missing.push('tenantId');
-  }
-  if (!state.storeId) {
-    missing.push('storeId');
-  }
   if (!state.deviceId) {
     missing.push('deviceId');
   }
@@ -54,20 +44,18 @@ export function getDeviceContext(): DeviceContext {
     throw new Error(
       `Missing device context: ${missing.join(
         ', ',
-      )}. Configure the device in settings before enqueueing commands.`,
+      )}. The app must initialise device context before enqueueing commands.`,
     );
   }
 
   return {
-    tenantId: state.tenantId!,
-    storeId: state.storeId!,
     deviceId: state.deviceId!,
     businessDate: state.businessDate ?? getDefaultBusinessDate(),
   };
 }
 
 export type CommandKeyParams = {
-  command: IdempotencyParams['command'];
+  command: CommandName;
   entityId: string;
   part?: string;
   version?: number;
@@ -82,9 +70,7 @@ export function makeCommandKey({
   businessDateOverride,
 }: CommandKeyParams) {
   const context = getDeviceContext();
-  return makeKey({
-    tenantId: context.tenantId,
-    storeId: context.storeId,
+  return makeDeviceKey({
     deviceId: context.deviceId,
     businessDate: businessDateOverride ?? context.businessDate,
     command,

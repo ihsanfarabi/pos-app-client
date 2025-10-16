@@ -41,8 +41,6 @@ export interface Mapping {
 
 export interface DeviceSettings {
   id: string;
-  tenantId?: string;
-  storeId?: string;
   deviceId?: string;
   businessDate?: string;
 }
