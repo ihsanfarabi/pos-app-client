@@ -1,3 +1,5 @@
+import type { FormEvent } from "react"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,10 +12,27 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+type LoginFormProps = Omit<React.ComponentPropsWithoutRef<"div">, "onSubmit"> & {
+  email: string
+  password: string
+  onEmailChange: (value: string) => void
+  onPasswordChange: (value: string) => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  submitting?: boolean
+  error?: string
+}
+
 export function LoginForm({
   className,
+  email,
+  password,
+  onEmailChange,
+  onPasswordChange,
+  onSubmit,
+  submitting = false,
+  error,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: LoginFormProps) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -23,8 +42,8 @@ export function LoginForm({
             Enter your email below to login to your account
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form>
+        <CardContent className="pt-6">
+          <form onSubmit={onSubmit} className="space-y-6">
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
@@ -32,7 +51,11 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  autoComplete="email"
                   required
+                  value={email}
+                  onChange={(event) => onEmailChange(event.target.value)}
+                  disabled={submitting}
                 />
               </div>
               <div className="grid gap-2">
@@ -45,12 +68,31 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => onPasswordChange(event.target.value)}
+                  disabled={submitting}
+                />
               </div>
-              <Button type="submit" className="w-full">
-                Login
+              {error ? (
+                <p className="text-sm text-destructive" role="alert">
+                  {error}
+                </p>
+              ) : null}
+              <Button type="submit" className="w-full" disabled={submitting}>
+                {submitting ? "Logging in…" : "Login"}
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full"
+                type="button"
+                disabled={submitting}
+              >
                 Login with Google
               </Button>
             </div>
