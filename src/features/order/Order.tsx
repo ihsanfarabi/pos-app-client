@@ -28,53 +28,84 @@ type PaymentFeedback =
 
 const INVENTORY: InventoryItem[] = [
   {
+    id: 'air-mineral',
+    name: 'Air',
+    category: 'Coffee & Tea',
+    price: 8000,
+  },
+  {
+    id: 'kopi-flight',
+    name: 'Kopi Nusantara Flight: Aceh Gayo | Toraja | Bali Kintamani Pour-Over Selection',
+    category: 'Coffee & Tea',
+    price: 55000,
+    description:
+      'A tasting journey across three single-origin beans with individual brewing notes poured tableside for guests to compare flavor profiles.',
+  },
+  {
     id: 'kopi-tubruk',
     name: 'Kopi Tubruk',
     category: 'Coffee & Tea',
     price: 25000,
-    description: 'Traditional Indonesian coffee brewed thick and bold.',
+    description:
+      'Traditional Indonesian coffee brewed thick and bold with rustic grounds left in the cup for an authentic finish.',
   },
   {
-    id: 'es-teh-manis',
-    name: 'Es Teh Manis',
+    id: 'teh-manis',
+    name: 'Teh',
     category: 'Coffee & Tea',
     price: 15000,
-    description: 'Refreshing house-brewed sweet iced tea.',
+    description: 'Sweet iced tea.',
+  },
+  {
+    id: 'rendang-sapi',
+    name: "Chef's Heritage Rendang Sapi",
+    category: 'Specials',
+    price: 68000,
+    description:
+      'Slow-braised beef simmered in coconut milk and spices for eight hours until spoon-tender with deep caramelized notes.',
+  },
+  {
+    id: 'nasi-goreng',
+    name: 'Nasi Goreng Kampung Spesial dengan Udang dan Sambal Matah Rumahan',
+    category: 'Main Courses',
+    price: 48000,
+    description:
+      'Wok-fried rice with shrimp paste, smoky wok hei, crunchy crackers, and a bright sambal matah garnish.',
   },
   {
     id: 'sate-ayam',
     name: 'Sate Ayam',
     category: 'Appetizers',
     price: 42000,
-    description: 'Charcoal-grilled chicken skewers with peanut sauce.',
   },
   {
-    id: 'nasi-goreng',
-    name: 'Nasi Goreng Kampung',
-    category: 'Main Courses',
-    price: 48000,
-    description: 'Wok-fried rice with shrimp paste, egg, and crackers.',
-  },
-  {
-    id: 'rendang-sapi',
-    name: 'Rendang Sapi',
-    category: 'Specials',
-    price: 68000,
-    description: 'Slow-braised beef in rich coconut and spice gravy.',
-  },
-  {
-    id: 'es-cendol',
-    name: 'Es Cendol',
-    category: 'Desserts',
-    price: 30000,
-    description: 'Pandan jelly, coconut milk, and palm sugar over ice.',
+    id: 'soto-ayam',
+    name: 'Soto Ayam Hangat',
+    category: 'Soups',
+    price: 36000,
+    description: 'Turmeric chicken soup with vermicelli and fresh herbs.',
   },
   {
     id: 'perkedel-kentang',
     name: 'Perkedel Kentang',
     category: 'Sides',
     price: 22000,
-    description: 'Pan-fried mashed potato patties with scallions.',
+    description: 'Crispy mashed potato fritter.',
+  },
+  {
+    id: 'dessert-sampler',
+    name: 'Meja Penutup Chef: Sampler Manis Harian',
+    category: 'Desserts',
+    price: 42000,
+    description:
+      'Rotating trio of small-format desserts featuring traditional cakes, market fruit, and modern plated sweets to share.',
+  },
+  {
+    id: 'pisang-goreng',
+    name: 'Pisang Goreng Keju Susu',
+    category: 'Snacks',
+    price: 28000,
+    description: 'Crispy fried banana with palm sugar drizzle and grated cheese.',
   },
   {
     id: 'mini-nasi-goreng',
@@ -82,20 +113,6 @@ const INVENTORY: InventoryItem[] = [
     category: 'Kids Meals',
     price: 32000,
     description: 'Kid-sized fried rice with chicken and sweet soy.',
-  },
-  {
-    id: 'soto-ayam',
-    name: 'Soto Ayam',
-    category: 'Soups',
-    price: 36000,
-    description: 'Turmeric chicken soup with vermicelli and herbs.',
-  },
-  {
-    id: 'pisang-goreng',
-    name: 'Pisang Goreng',
-    category: 'Snacks',
-    price: 28000,
-    description: 'Crispy fried banana served with palm sugar drizzle.',
   },
 ];
 
