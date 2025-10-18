@@ -7,7 +7,7 @@ import { useSession } from '@/stores/session';
 import { authRest } from '@/services/api/adapters/auth.rest';
 
 const navItems = [
-  { to: '/tickets', label: 'Tickets' },
+  { to: '/order', label: 'Order' },
 ];
 
 export default function Layout() {
