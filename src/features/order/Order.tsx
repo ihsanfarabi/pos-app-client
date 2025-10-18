@@ -203,32 +203,36 @@ export default function Order() {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
-        <OrderPanel
-          cart={cart}
-          onAdjustQuantity={handleAdjustQuantity}
-          onRemoveItem={handleRemoveItem}
-          subtotal={subtotal}
-          tax={tax}
-          total={total}
-          tendered={tendered}
-          onTenderedChange={setTendered}
-          note={note}
-          onNoteChange={setNote}
-          feedback={feedback}
-          changeDue={changeDue}
-          onCharge={handleCharge}
-        />
-        <ClassicProductList
-          categories={categories}
-          activeCategory={activeCategory}
-          onSelectCategory={setActiveCategory}
-          searchTerm={searchTerm}
-          onSearch={setSearchTerm}
-          items={filteredItems}
-          onAddItem={handleAddItem}
-        />
+    <div className="flex flex-col gap-3 p-2 sm:gap-6 sm:p-6">
+      <div className="grid gap-3 sm:gap-6 lg:grid-cols-[1fr_1fr]">
+        <div className="min-w-0">
+          <ClassicProductList
+            categories={categories}
+            activeCategory={activeCategory}
+            onSelectCategory={setActiveCategory}
+            searchTerm={searchTerm}
+            onSearch={setSearchTerm}
+            items={filteredItems}
+            onAddItem={handleAddItem}
+          />
+        </div>
+        <div className="min-w-0">
+          <OrderPanel
+            cart={cart}
+            onAdjustQuantity={handleAdjustQuantity}
+            onRemoveItem={handleRemoveItem}
+            subtotal={subtotal}
+            tax={tax}
+            total={total}
+            tendered={tendered}
+            onTenderedChange={setTendered}
+            note={note}
+            onNoteChange={setNote}
+            feedback={feedback}
+            changeDue={changeDue}
+            onCharge={handleCharge}
+          />
+        </div>
       </div>
     </div>
   );
@@ -254,16 +258,17 @@ function ClassicProductList({
   onAddItem,
 }: ClassicProductListProps) {
   return (
-    <Card>
+    <Card className="w-full min-w-0">
       <CardHeader className="space-y-4">
-        <CardTitle className="text-lg">Catalog</CardTitle>
-        <div className="flex flex-wrap gap-2">
+        <CardTitle className="text-lg">Menu</CardTitle>
+        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
           {categories.map((category) => (
             <Button
               key={category}
               variant={category === activeCategory ? 'secondary' : 'outline'}
               size="sm"
               onClick={() => onSelectCategory(category)}
+              className="shrink-0"
             >
               {category}
             </Button>
@@ -277,12 +282,12 @@ function ClassicProductList({
         />
       </CardHeader>
       <CardContent className="p-0">
-        <div className="max-h-[32rem] overflow-y-auto">
+        <div className="max-h-[32rem] overflow-x-auto overflow-y-auto">
           <table className="min-w-full text-sm">
             <thead className="sticky top-0 bg-background">
               <tr className="text-left text-xs uppercase text-muted-foreground">
                 <th className="px-4 py-3 font-medium">Item</th>
-                <th className="px-4 py-3 font-medium">Category</th>
+                <th className="hidden px-4 py-3 font-medium sm:table-cell">Category</th>
                 <th className="px-4 py-3 font-medium text-right">Price</th>
                 <th className="px-4 py-3" />
               </tr>
@@ -309,7 +314,9 @@ function ClassicProductList({
                         <div className="text-xs text-muted-foreground">{item.description}</div>
                       ) : null}
                     </td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">{item.category}</td>
+                    <td className="hidden px-4 py-3 text-xs text-muted-foreground sm:table-cell">
+                      {item.category}
+                    </td>
                     <td className="px-4 py-3 text-right text-sm font-semibold">
                       {formatCurrency(item.price)}
                     </td>
@@ -364,12 +371,9 @@ function OrderPanel({
     feedback?.status === 'success' ? feedback.changeDue : changeDue;
 
   return (
-    <Card className="border bg-background shadow-sm">
+    <Card className="w-full min-w-0 border bg-background shadow-sm">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-lg">Ticket</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Review items, adjust quantities, and collect payment.
-        </p>
+        <CardTitle className="text-lg">Order Details</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">

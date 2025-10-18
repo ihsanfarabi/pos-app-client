@@ -55,7 +55,7 @@ export default function Layout() {
           </Button>
         </div>
       </header>
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-8 py-6">
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-2 py-3 sm:px-8 sm:py-6">
         <Outlet />
       </main>
     </div>
