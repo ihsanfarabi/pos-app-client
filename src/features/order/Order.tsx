@@ -134,7 +134,7 @@ export default function Order() {
       const matchesTerm =
         normalizedTerm.length === 0 || item.name.toLowerCase().includes(normalizedTerm);
       return matchesCategory && matchesTerm;
-    });
+    }).sort((a, b) => a.name.localeCompare(b.name));
   }, [activeCategory, searchTerm]);
 
   const subtotal = useMemo(
