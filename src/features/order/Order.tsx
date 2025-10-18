@@ -395,29 +395,31 @@ function OrderPanel({
                     {item.quantity} x {formatCurrency(item.price)}
                   </div>
                 </div>
-                <div className="ml-auto flex items-center gap-1">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => onAdjustQuantity(item.id, -1)}
-                    aria-label={`Decrease ${item.name}`}
-                  >
-                    -
-                  </Button>
-                  <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => onAdjustQuantity(item.id, 1)}
-                    aria-label={`Increase ${item.name}`}
-                  >
-                    +
-                  </Button>
-                </div>
-                <div className="w-16 text-right text-sm font-semibold">
-                  {formatCurrency(item.price * item.quantity)}
+                <div className="ml-auto flex items-center gap-3 sm:gap-4">
+                  <div className="flex items-center gap-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => onAdjustQuantity(item.id, -1)}
+                      aria-label={`Decrease ${item.name}`}
+                    >
+                      -
+                    </Button>
+                    <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => onAdjustQuantity(item.id, 1)}
+                      aria-label={`Increase ${item.name}`}
+                    >
+                      +
+                    </Button>
+                  </div>
+                  <div className="min-w-[7rem] whitespace-nowrap text-right text-sm font-semibold tabular-nums sm:min-w-[6rem]">
+                    {formatCurrency(item.price * item.quantity)}
+                  </div>
                 </div>
               </div>
             ))
