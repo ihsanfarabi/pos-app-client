@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import type { ComponentProps, ComponentType, SVGProps } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { LogOut, ShoppingCart } from 'lucide-react'
