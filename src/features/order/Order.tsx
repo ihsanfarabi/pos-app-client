@@ -254,7 +254,7 @@ function ProductList({
   return (
     <Card className="w-full min-w-0 border bg-background shadow-sm">
       <CardHeader className="space-y-4">
-        <CardTitle className="text-lg">Menu</CardTitle>
+        <CardTitle className="text-lg">Catalogue</CardTitle>
         <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
           {categories.map((category) => (
             <Button
@@ -374,7 +374,7 @@ function OrderPanel({
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
               <span>No items have been added yet.</span>
-              <span>Use the menu to build the ticket.</span>
+              <span>Use the catalogue to build the ticket.</span>
             </div>
           ) : (
             cart.map((item) => (
