@@ -1,19 +1,22 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { AppSidebar, sidebarNavigation } from '@/components/app-sidebar';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { Separator } from '@/components/ui/separator';
 import { useSession } from '@/stores/session';
 import { authRest } from '@/services/api/adapters/auth.rest';
-
-const navItems = [
-  { to: '/order', label: 'Order' },
-];
 
 export default function Layout() {
   const setToken = useSession((state) => state.setToken);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const location = useLocation();
+
+  const activeItem = sidebarNavigation.find((item) =>
+    location.pathname === item.to || location.pathname.startsWith(`${item.to}/`),
+  );
 
   async function handleLogout() {
     try {
@@ -28,36 +31,30 @@ export default function Layout() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-muted/50">
-      <header className="border-b border-border bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-8 px-8">
-          <div className="flex items-center gap-10">
-            <span className="text-lg font-semibold tracking-tight">POS</span>
-            <nav className="flex items-center gap-2">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    cn(
-                      'rounded-xl px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
-                      isActive && 'bg-foreground text-background',
-                    )
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-            </nav>
+    <SidebarProvider>
+      <AppSidebar onLogout={handleLogout} />
+      <SidebarInset className="flex flex-1 flex-col bg-muted/50">
+        <div className="flex h-14 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="hidden h-6 md:block" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">{activeItem?.label ?? 'POS'}</span>
           </div>
-          <Button onClick={handleLogout} variant="outline">
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            size="sm"
+            className="ml-auto md:hidden"
+          >
             Logout
           </Button>
         </div>
-      </header>
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-2 py-3 sm:px-8 sm:py-6">
-        <Outlet />
-      </main>
-    </div>
+        <div className="flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-8 sm:py-6">
+            <Outlet />
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
