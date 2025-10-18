@@ -50,7 +50,7 @@ export default function Layout() {
           </Button>
         </div>
         <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-8 sm:py-6">
+          <div className="mx-auto w-full max-w-7xl px-0 py-0 sm:px-8 sm:py-6">
             <Outlet />
           </div>
         </div>
