@@ -215,7 +215,7 @@ export default function Order() {
 
   return (
     <div className="flex flex-col gap-3 p-2 sm:gap-6 sm:p-6">
-      <div className="grid gap-3 sm:gap-6 lg:grid-cols-[1fr_1fr]">
+      <div className="grid gap-3 sm:gap-6 lg:grid-cols-[1.2fr_1fr]">
         <div className="min-w-0">
           <ProductList
             categories={categories}
