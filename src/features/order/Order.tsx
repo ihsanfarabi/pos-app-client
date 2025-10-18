@@ -209,6 +209,13 @@ export default function Order() {
     setNote('');
   };
 
+  const handleClearOrder = () => {
+    setCart([]);
+    setTendered('');
+    setNote('');
+    setFeedback(null);
+  };
+
   return (
     <div className="flex flex-col gap-3 p-2 sm:gap-6 sm:p-6">
       <div className="grid gap-3 sm:gap-6 lg:grid-cols-[1.2fr_1fr]">
@@ -237,6 +244,7 @@ export default function Order() {
             feedback={feedback}
             changeDue={changeDue}
             onCharge={handleCharge}
+            onClear={handleClearOrder}
           />
         </div>
       </div>
@@ -355,6 +363,7 @@ type OrderPanelProps = {
   feedback: PaymentFeedback | null;
   changeDue: number;
   onCharge: () => void;
+  onClear: () => void;
 };
 
 function OrderPanel({
@@ -370,9 +379,15 @@ function OrderPanel({
   feedback,
   changeDue,
   onCharge,
+  onClear,
 }: OrderPanelProps) {
   const displayChangeDue =
     feedback?.status === 'success' ? feedback.changeDue : changeDue;
+  const hasOrderDetails =
+    cart.length > 0 ||
+    tendered.trim().length > 0 ||
+    note.trim().length > 0 ||
+    feedback !== null;
 
   return (
     <Card className="w-full min-w-0 border bg-background shadow-sm">
@@ -493,6 +508,16 @@ function OrderPanel({
         ) : null}
 
         <div className="flex w-full flex-col gap-2 sm:flex-row">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full text-base font-semibold"
+            size="lg"
+            onClick={onClear}
+            disabled={!hasOrderDetails}
+          >
+            Clear order
+          </Button>
           <Button className="w-full text-base font-semibold" size="lg" onClick={onCharge}>
             Charge {formatCurrency(total)}
           </Button>
