@@ -30,7 +30,7 @@ export default function Layout() {
   return (
     <div className="flex min-h-screen flex-col bg-muted/50">
       <header className="border-b border-border bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-20 w-full max-w-5xl items-center justify-between gap-8 px-6">
+        <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-8 px-8">
           <div className="flex items-center gap-10">
             <span className="text-lg font-semibold tracking-tight">POS</span>
             <nav className="flex items-center gap-2">
@@ -55,7 +55,7 @@ export default function Layout() {
           </Button>
         </div>
       </header>
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-6 py-6">
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-8 py-6">
         <Outlet />
       </main>
     </div>
