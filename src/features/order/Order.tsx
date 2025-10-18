@@ -180,10 +180,6 @@ export default function Order() {
     );
   };
 
-  const handleRemoveItem = (id: string) => {
-    setCart((previous) => previous.filter((line) => line.id !== id));
-  };
-
   const handleCharge = () => {
     if (cart.length === 0) {
       setFeedback({ status: 'error', message: 'Add at least one item before charging.' });
@@ -231,7 +227,6 @@ export default function Order() {
           <OrderPanel
             cart={cart}
             onAdjustQuantity={handleAdjustQuantity}
-            onRemoveItem={handleRemoveItem}
             subtotal={subtotal}
             tax={tax}
             total={total}
@@ -350,7 +345,6 @@ function ProductList({
 type OrderPanelProps = {
   cart: CartLineItem[];
   onAdjustQuantity: (id: string, delta: number) => void;
-  onRemoveItem: (id: string) => void;
   subtotal: number;
   tax: number;
   total: number;
@@ -366,7 +360,6 @@ type OrderPanelProps = {
 function OrderPanel({
   cart,
   onAdjustQuantity,
-  onRemoveItem,
   subtotal,
   tax,
   total,
@@ -426,15 +419,6 @@ function OrderPanel({
                 <div className="w-16 text-right text-sm font-semibold">
                   {formatCurrency(item.price * item.quantity)}
                 </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onRemoveItem(item.id)}
-                  aria-label={`Remove ${item.name}`}
-                >
-                  x
-                </Button>
               </div>
             ))
           )}
