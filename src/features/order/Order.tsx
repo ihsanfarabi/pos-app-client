@@ -204,13 +204,6 @@ export default function Order() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold">Point of Sale</h1>
-        <p className="text-sm text-muted-foreground">
-          Add items, review the ticket, and complete the charge in one place.
-        </p>
-      </header>
-
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <OrderPanel
           cart={cart}
