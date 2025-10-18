@@ -200,7 +200,7 @@ export default function Order() {
     <div className="flex flex-col gap-3 p-2 sm:gap-6 sm:p-6">
       <div className="grid gap-3 sm:gap-6 lg:grid-cols-[1fr_1fr]">
         <div className="min-w-0">
-          <ClassicProductList
+          <ProductList
             categories={categories}
             activeCategory={activeCategory}
             onSelectCategory={setActiveCategory}
@@ -232,7 +232,7 @@ export default function Order() {
   );
 }
 
-type ClassicProductListProps = {
+type ProductListProps = {
   categories: string[];
   activeCategory: string;
   onSelectCategory: (category: string) => void;
@@ -242,7 +242,7 @@ type ClassicProductListProps = {
   onAddItem: (item: InventoryItem) => void;
 };
 
-function ClassicProductList({
+function ProductList({
   categories,
   activeCategory,
   onSelectCategory,
@@ -250,7 +250,7 @@ function ClassicProductList({
   onSearch,
   items,
   onAddItem,
-}: ClassicProductListProps) {
+}: ProductListProps) {
   return (
     <Card className="w-full min-w-0 border bg-background shadow-sm">
       <CardHeader className="space-y-4">
