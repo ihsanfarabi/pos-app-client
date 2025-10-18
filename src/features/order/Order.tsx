@@ -252,7 +252,7 @@ function ClassicProductList({
   onAddItem,
 }: ClassicProductListProps) {
   return (
-    <Card className="w-full min-w-0">
+    <Card className="w-full min-w-0 border bg-background shadow-sm">
       <CardHeader className="space-y-4">
         <CardTitle className="text-lg">Menu</CardTitle>
         <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
