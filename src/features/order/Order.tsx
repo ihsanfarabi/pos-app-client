@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
 type InventoryItem = {
@@ -11,7 +13,6 @@ type InventoryItem = {
   category: string;
   price: number;
   description?: string;
-  tags?: string[];
 };
 
 type CartLineItem = {
@@ -32,7 +33,6 @@ const INVENTORY: InventoryItem[] = [
     category: 'Coffee & Tea',
     price: 25000,
     description: 'Traditional Indonesian coffee brewed thick and bold.',
-    tags: ['Hot'],
   },
   {
     id: 'es-teh-manis',
@@ -40,7 +40,6 @@ const INVENTORY: InventoryItem[] = [
     category: 'Coffee & Tea',
     price: 15000,
     description: 'Refreshing house-brewed sweet iced tea.',
-    tags: ['Iced'],
   },
   {
     id: 'sate-ayam',
@@ -48,7 +47,6 @@ const INVENTORY: InventoryItem[] = [
     category: 'Appetizers',
     price: 42000,
     description: 'Charcoal-grilled chicken skewers with peanut sauce.',
-    tags: ['Signature'],
   },
   {
     id: 'nasi-goreng',
@@ -56,7 +54,6 @@ const INVENTORY: InventoryItem[] = [
     category: 'Main Courses',
     price: 48000,
     description: 'Wok-fried rice with shrimp paste, egg, and crackers.',
-    tags: ['Best Seller'],
   },
   {
     id: 'rendang-sapi',
@@ -64,7 +61,6 @@ const INVENTORY: InventoryItem[] = [
     category: 'Specials',
     price: 68000,
     description: 'Slow-braised beef in rich coconut and spice gravy.',
-    tags: ['Weekend Special'],
   },
   {
     id: 'es-cendol',
@@ -72,7 +68,6 @@ const INVENTORY: InventoryItem[] = [
     category: 'Desserts',
     price: 30000,
     description: 'Pandan jelly, coconut milk, and palm sugar over ice.',
-    tags: ['Cold'],
   },
   {
     id: 'perkedel-kentang',
@@ -94,7 +89,6 @@ const INVENTORY: InventoryItem[] = [
     category: 'Soups',
     price: 36000,
     description: 'Turmeric chicken soup with vermicelli and herbs.',
-    tags: ['Comfort Food'],
   },
   {
     id: 'pisang-goreng',
@@ -444,9 +438,12 @@ function OrderPanel({
           </div>
         </div>
         <div className="space-y-3">
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-muted-foreground">Amount tendered</span>
+          <div className="flex flex-col gap-1 text-sm">
+            <Label htmlFor="amount-tendered" className="text-muted-foreground">
+              Amount tendered
+            </Label>
             <Input
+              id="amount-tendered"
               type="number"
               min="0"
               inputMode="decimal"
@@ -454,20 +451,20 @@ function OrderPanel({
               onChange={(event) => onTenderedChange(event.target.value)}
               placeholder="0.00"
             />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-muted-foreground">Ticket note (optional)</span>
-            <textarea
+          </div>
+          <div className="flex flex-col gap-1 text-sm">
+            <Label htmlFor="ticket-note" className="text-muted-foreground">
+              Ticket note (optional)
+            </Label>
+            <Textarea
+              id="ticket-note"
               value={note}
               onChange={(event) => onNoteChange(event.target.value)}
-              rows={3}
-              className={cn(
-                'w-full resize-none rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
-                'min-h-[4.5rem]',
-              )}
               placeholder="Add note for the kitchen or customer"
+              rows={3}
+              className="min-h-[4.5rem]"
             />
-          </label>
+          </div>
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-3">
