@@ -46,7 +46,6 @@ type InventoryItem = {
   name: string;
   category: string;
   price: number;
-  description?: string;
 };
 
 type CartLineItem = {
@@ -66,85 +65,72 @@ const INVENTORY: InventoryItem[] = [
     name: 'Double Espresso',
     category: 'Espresso Bar',
     price: 28000,
-    description:
-      'Two shots of house-roasted espresso pulled to showcase dark chocolate and orange zest notes.',
   },
   {
     id: 'flat-white',
     name: 'Flat White',
     category: 'Espresso Bar',
     price: 35000,
-    description: 'Silky microfoam poured over ristretto shots for a balanced, velvety cup.',
   },
   {
     id: 'oat-latte',
     name: 'Oat Milk Latte',
     category: 'Espresso Bar',
     price: 38000,
-    description: 'Classic latte sweetened with panela syrup and finished with barista oat milk.',
   },
   {
     id: 'v60-sumatra',
     name: 'V60 Single Origin: Sumatra Lintong',
     category: 'Brew Bar',
     price: 45000,
-    description: 'Hand-poured filter brew with syrupy body, sweet tobacco aroma, and spice finish.',
   },
   {
     id: 'aeropress-ethiopia',
     name: 'Aeropress Ethiopia Guji',
     category: 'Brew Bar',
     price: 42000,
-    description: 'Clean cup with jasmine florals and bright citrus, brewed to order in five minutes.',
   },
   {
     id: 'nitro-cold-brew',
     name: 'Nitro Cold Brew',
     category: 'Cold Coffee',
     price: 48000,
-    description: 'Slow-steeped concentrate charged with nitrogen for a silky cascade and cocoa aroma.',
   },
   {
     id: 'salted-caramel-cold-brew',
     name: 'Salted Caramel Cream Cold Brew',
     category: 'Cold Coffee',
     price: 52000,
-    description: 'House cold brew topped with caramel foam and smoked sea salt for a sweet-savory sip.',
   },
   {
     id: 'matcha-tonic',
     name: 'Matcha Tonic',
     category: 'Tea & Refreshers',
     price: 42000,
-    description: 'Ceremonial matcha shaken with citrus tonic for a sparkling herbal refresher.',
   },
   {
     id: 'spiced-chai',
     name: 'Spiced Chai Latte',
     category: 'Tea & Refreshers',
     price: 36000,
-    description: 'Masala chai concentrate simmered with spices and finished with steamed milk.',
   },
   {
     id: 'brown-butter-croissant',
     name: 'Brown Butter Croissant',
     category: 'Pastry Case',
     price: 32000,
-    description: 'Flaky laminated pastry baked daily with browned butter for a nutty finish.',
   },
   {
     id: 'walnut-banana-bread',
     name: 'Walnut Banana Bread',
     category: 'Pastry Case',
     price: 28000,
-    description: 'Moist banana loaf slices studded with toasted walnuts and espresso glaze.',
   },
   {
     id: 'cold-brew-oats',
     name: 'Vanilla Cold Brew Oats',
     category: 'Grab & Go',
     price: 34000,
-    description: 'Overnight oats soaked in cold brew with vanilla yogurt and cacao nib crunch.',
   },
 ];
 
@@ -364,9 +350,6 @@ function ProductList({
                           <tr key={item.id} className={css.itemRow}>
                             <td className="px-4 py-3">
                               <div className="text-sm font-medium">{item.name}</div>
-                              {item.description ? (
-                                <div className={css.subtle}>{item.description}</div>
-                              ) : null}
                             </td>
                             <td className={css.priceCell}>{formatCurrency(item.price)}</td>
                             <td className="px-4 py-3 text-right">
