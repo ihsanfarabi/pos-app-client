@@ -403,26 +403,29 @@ function OrderPanel({
 
   return (
     <Card className="w-full min-w-0 border bg-background shadow-sm">
-      <CardHeader className="space-y-1">
+      <CardHeader className="space-y-0.5 sm:space-y-1">
         <CardTitle className="text-lg">Order Details</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
+      <CardContent className="space-y-3 sm:space-y-4">
+        <div className="space-y-2.5 sm:space-y-3">
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+            <div className="flex flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground sm:gap-2 sm:p-6 sm:text-sm">
               <span>No items have been added yet.</span>
               <span>Add something tasty from the menu.</span>
             </div>
           ) : (
             cart.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 rounded-lg border p-3">
+              <div
+                key={item.id}
+                className="flex items-center gap-2.5 rounded-lg border p-2.5 sm:gap-3 sm:p-3"
+              >
                 <div>
                   <div className="text-sm font-medium">{item.name}</div>
                   <div className="text-xs text-muted-foreground">
                     {item.quantity} x {formatCurrency(item.price)}
                   </div>
                 </div>
-                <div className="ml-auto flex items-center gap-3 sm:gap-4">
+                <div className="ml-auto flex items-center gap-2.5 sm:gap-4">
                   <div className="flex items-center gap-1">
                     <Button
                       type="button"
@@ -444,7 +447,7 @@ function OrderPanel({
                       +
                     </Button>
                   </div>
-                  <div className="min-w-[7rem] whitespace-nowrap text-right text-sm font-semibold tabular-nums sm:min-w-[6rem]">
+                  <div className="min-w-[5.5rem] whitespace-nowrap text-right text-sm font-semibold tabular-nums sm:min-w-[6rem]">
                     {formatCurrency(item.price * item.quantity)}
                   </div>
                 </div>
@@ -453,7 +456,7 @@ function OrderPanel({
           )}
         </div>
         <Separator />
-        <div className="space-y-3">
+        <div className="space-y-2.5 sm:space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Subtotal</span>
             <span className="font-medium">{formatCurrency(subtotal)}</span>
@@ -462,12 +465,12 @@ function OrderPanel({
             <span className="text-muted-foreground">Tax ({(TAX_RATE * 100).toFixed(1)}%)</span>
             <span className="font-medium">{formatCurrency(tax)}</span>
           </div>
-          <div className="flex items-center justify-between text-base font-semibold">
+          <div className="flex items-center justify-between text-sm font-semibold sm:text-base">
             <span>Total due</span>
             <span>{formatCurrency(total)}</span>
           </div>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-2.5 sm:space-y-3">
           <div className="flex flex-col gap-1 text-sm">
             <Label htmlFor="amount-tendered" className="text-muted-foreground">
               Payment received
@@ -492,15 +495,15 @@ function OrderPanel({
               onChange={(event) => onNoteChange(event.target.value)}
               placeholder="Add note for the customer"
               rows={3}
-              className="min-h-[4.5rem]"
+              className="min-h-[3.5rem] sm:min-h-[4.5rem]"
             />
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-col gap-3">
+      <CardFooter className="flex flex-col gap-2 sm:gap-3">
         {feedback ? (
           <div
-            className={cn('w-full rounded-md border px-3 py-2 text-sm', {
+            className={cn('w-full rounded-md border px-2.5 py-2 text-xs sm:px-3 sm:text-sm', {
               'border-green-500/40 bg-green-500/10 text-emerald-900 dark:text-emerald-100':
                 feedback.status === 'success',
               'border-destructive/40 bg-destructive/10 text-destructive':
@@ -519,22 +522,22 @@ function OrderPanel({
           </div>
         ) : null}
 
-        <div className="flex w-full flex-col gap-2 sm:flex-row">
+        <div className="flex w-full flex-col gap-1.5 sm:flex-row sm:gap-2">
           <Button
             type="button"
             variant="outline"
-            className="w-full text-base font-semibold"
+            className="w-full text-sm font-semibold sm:text-base"
             size="lg"
             onClick={onClear}
             disabled={!hasOrderDetails}
           >
             Clear order
           </Button>
-          <Button className="w-full text-base font-semibold" size="lg" onClick={onCharge}>
+          <Button className="w-full text-sm font-semibold sm:text-base" size="lg" onClick={onCharge}>
             Charge
           </Button>
           {feedback?.status === 'success' ? (
-            <div className="flex w-full flex-col justify-center rounded-md border border-dashed px-3 py-2 text-xs text-muted-foreground sm:w-auto">
+            <div className="flex w-full flex-col justify-center rounded-md border border-dashed px-2.5 py-2 text-xs text-muted-foreground sm:w-auto sm:px-3 sm:text-sm">
               <span>Change due</span>
               <span className="text-sm font-semibold">{formatCurrency(displayChangeDue)}</span>
             </div>
