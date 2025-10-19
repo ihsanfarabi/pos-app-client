@@ -313,7 +313,7 @@ function ProductList({
       <CardHeader className="space-y-0">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <CardTitle className="text-lg">Catalogue</CardTitle>
-          <div className="relative flex-1 min-w-[8rem] sm:max-w-[16rem]">
+          <div className="relative min-w-[8rem] max-w-[12rem] sm:flex-1 sm:max-w-[16rem]">
             <Label htmlFor="catalogue-search" className="sr-only">
               Filter catalogue
             </Label>
