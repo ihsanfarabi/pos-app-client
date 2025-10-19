@@ -394,7 +394,7 @@ function OrderPanel({
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
               <span>No items have been added yet.</span>
-              <span>Use the catalogue to build the ticket.</span>
+              <span>Add something tasty from the menu.</span>
             </div>
           ) : (
             cart.map((item) => (
@@ -453,7 +453,7 @@ function OrderPanel({
         <div className="space-y-3">
           <div className="flex flex-col gap-1 text-sm">
             <Label htmlFor="amount-tendered" className="text-muted-foreground">
-              Amount tendered
+              Payment received
             </Label>
             <Input
               id="amount-tendered"
@@ -473,7 +473,7 @@ function OrderPanel({
               id="ticket-note"
               value={note}
               onChange={(event) => onNoteChange(event.target.value)}
-              placeholder="Add note for the kitchen or customer"
+              placeholder="Add note for the customer"
               rows={3}
               className="min-h-[4.5rem]"
             />
@@ -514,7 +514,7 @@ function OrderPanel({
             Clear order
           </Button>
           <Button className="w-full text-base font-semibold" size="lg" onClick={onCharge}>
-            Charge {formatCurrency(total)}
+            Charge
           </Button>
           {feedback?.status === 'success' ? (
             <div className="flex w-full flex-col justify-center rounded-md border border-dashed px-3 py-2 text-xs text-muted-foreground sm:w-auto">
