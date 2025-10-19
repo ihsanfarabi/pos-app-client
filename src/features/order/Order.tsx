@@ -406,8 +406,8 @@ function OrderPanel({
       <CardHeader className="space-y-0.5 sm:space-y-1">
         <CardTitle className="text-lg">Order Details</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3 sm:space-y-4">
-        <div className="space-y-2.5 sm:space-y-3">
+      <CardContent className="space-y-3 sm:space-y-4 md:landscape:space-y-2.5">
+        <div className="space-y-2.5 sm:space-y-3 md:landscape:space-y-2">
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground sm:gap-2 sm:p-6 sm:text-sm">
               <span>No items have been added yet.</span>
@@ -417,7 +417,7 @@ function OrderPanel({
             cart.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-2.5 rounded-lg border p-2.5 sm:gap-3 sm:p-3"
+                className="flex items-center gap-2.5 rounded-lg border p-2.5 sm:gap-3 sm:p-3 md:landscape:gap-2 md:landscape:rounded-md"
               >
                 <div>
                   <div className="text-sm font-medium">{item.name}</div>
@@ -425,29 +425,33 @@ function OrderPanel({
                     {item.quantity} x {formatCurrency(item.price)}
                   </div>
                 </div>
-                <div className="ml-auto flex items-center gap-2.5 sm:gap-4">
-                  <div className="flex items-center gap-1">
+                <div className="ml-auto flex items-center gap-2.5 sm:gap-4 md:landscape:gap-2">
+                  <div className="flex items-center gap-1 md:landscape:gap-0.5">
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
                       onClick={() => onAdjustQuantity(item.id, -1)}
                       aria-label={`Decrease ${item.name}`}
+                      className="md:landscape:h-8 md:landscape:w-8"
                     >
                       -
                     </Button>
-                    <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                    <span className="w-8 text-center text-sm font-medium md:landscape:w-7 md:landscape:text-xs">
+                      {item.quantity}
+                    </span>
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
                       onClick={() => onAdjustQuantity(item.id, 1)}
                       aria-label={`Increase ${item.name}`}
+                      className="md:landscape:h-8 md:landscape:w-8"
                     >
                       +
                     </Button>
                   </div>
-                  <div className="min-w-[5.5rem] whitespace-nowrap text-right text-sm font-semibold tabular-nums sm:min-w-[6rem]">
+                  <div className="min-w-[5.5rem] whitespace-nowrap text-right text-sm font-semibold tabular-nums sm:min-w-[6rem] md:landscape:min-w-[4.75rem] md:landscape:text-xs">
                     {formatCurrency(item.price * item.quantity)}
                   </div>
                 </div>
