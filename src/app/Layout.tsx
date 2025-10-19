@@ -56,10 +56,7 @@ function LayoutContent({ onLogout, activeItemLabel }: LayoutContentProps) {
   return (
     <SidebarInset className="flex flex-1 flex-col bg-muted/50">
       <div
-        className={cn(
-          'flex h-14 items-center gap-2 border-b border-border bg-background/80 px-2 backdrop-blur sm:px-3',
-          isSidebarExpanded && 'md:px-3',
-        )}
+        className="flex h-14 items-center gap-2 border-b border-border bg-background/80 px-2 backdrop-blur sm:px-3"
       >
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="hidden h-6 md:block" />
@@ -73,10 +70,8 @@ function LayoutContent({ onLogout, activeItemLabel }: LayoutContentProps) {
       <div className="flex-1 overflow-y-auto">
         <div
           className={cn(
-            'w-full px-1 py-2 transition-[padding]',
-            isSidebarExpanded
-              ? 'sm:px-2 sm:py-2 md:px-3 md:py-3'
-              : 'sm:px-3 sm:py-3 md:px-4 md:py-4',
+            'w-full px-1 py-2 transition-[padding] sm:px-2 sm:py-2 md:px-3 md:py-3',
+            !isSidebarExpanded && 'sm:px-3 sm:py-3 md:px-4 md:py-4',
           )}
         >
           <Outlet />
