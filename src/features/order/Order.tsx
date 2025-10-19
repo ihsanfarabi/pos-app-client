@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -309,14 +310,24 @@ function ProductList({
 }: ProductListProps) {
   return (
     <Card className={css.card}>
-      <CardHeader className="space-y-4">
-        <CardTitle className="text-lg">Catalogue</CardTitle>
-        <Input
-          placeholder="Type to filter"
-          value={searchTerm}
-          onChange={(event) => onSearch(event.target.value)}
-          className="h-10"
-        />
+      <CardHeader className="space-y-0">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <CardTitle className="text-lg">Catalogue</CardTitle>
+          <div className="relative flex-1 min-w-[8rem] sm:max-w-[16rem]">
+            <Label htmlFor="catalogue-search" className="sr-only">
+              Filter catalogue
+            </Label>
+            <Input
+              id="catalogue-search"
+              type="search"
+              placeholder="Search catalogue"
+              value={searchTerm}
+              onChange={(event) => onSearch(event.target.value)}
+              className="h-10 w-full pl-8"
+            />
+            <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="p-0">
         {(() => {
