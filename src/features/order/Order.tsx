@@ -301,7 +301,6 @@ function ProductList({
             <thead className="sticky top-0 bg-background">
               <tr className="text-left text-xs uppercase text-muted-foreground">
                 <th className="px-4 py-3 font-medium">Item</th>
-                <th className="hidden px-4 py-3 font-medium sm:table-cell">Category</th>
                 <th className="px-4 py-3 font-medium text-right">Price</th>
                 <th className="px-4 py-3" />
               </tr>
@@ -310,7 +309,7 @@ function ProductList({
               {items.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={3}
                     className="px-4 py-6 text-center text-xs text-muted-foreground"
                   >
                     No items to display. Try a different search.
@@ -327,9 +326,6 @@ function ProductList({
                       {item.description ? (
                         <div className="text-xs text-muted-foreground">{item.description}</div>
                       ) : null}
-                    </td>
-                    <td className="hidden px-4 py-3 text-xs text-muted-foreground sm:table-cell">
-                      {item.category}
                     </td>
                     <td className="px-4 py-3 text-right text-sm font-semibold">
                       {formatCurrency(item.price)}
