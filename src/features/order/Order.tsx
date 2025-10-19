@@ -336,7 +336,7 @@ function ProductList({
                 </div>
               </div>
               <div className="flex-1">
-                <div className="max-h-[32rem] sm:max-h-[36rem] overflow-auto">
+                <div className="max-h-[32rem] overflow-auto">
                   <table className="min-w-full text-sm">
                     <tbody>
                       {items.length === 0 ? (
