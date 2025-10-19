@@ -275,19 +275,6 @@ function ProductList({
     <Card className="w-full min-w-0 border bg-background shadow-sm">
       <CardHeader className="space-y-4">
         <CardTitle className="text-lg">Catalogue</CardTitle>
-        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
-          {categories.map((category) => (
-            <Button
-              key={category}
-              variant={category === activeCategory ? 'secondary' : 'outline'}
-              size="sm"
-              onClick={() => onSelectCategory(category)}
-              className="shrink-0"
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
         <Input
           placeholder="Type to filter"
           value={searchTerm}
@@ -296,50 +283,69 @@ function ProductList({
         />
       </CardHeader>
       <CardContent className="p-0">
-        <div className="max-h-[32rem] overflow-x-auto overflow-y-auto">
-          <table className="min-w-full text-sm">
-            <thead className="sticky top-0 bg-background">
-              <tr className="text-left text-xs uppercase text-muted-foreground">
-                <th className="px-4 py-3 font-medium">Item</th>
-                <th className="px-4 py-3 font-medium text-right">Price</th>
-                <th className="px-4 py-3" />
-              </tr>
-            </thead>
-            <tbody>
-              {items.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={3}
-                    className="px-4 py-6 text-center text-xs text-muted-foreground"
-                  >
-                    No items to display. Try a different search.
-                  </td>
-                </tr>
-              ) : (
-                items.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="border-t border-border/60 transition hover:bg-muted/60"
-                  >
-                    <td className="px-4 py-3">
-                      <div className="text-sm font-medium">{item.name}</div>
-                      {item.description ? (
-                        <div className="text-xs text-muted-foreground">{item.description}</div>
-                      ) : null}
-                    </td>
-                    <td className="px-4 py-3 text-right text-sm font-semibold">
-                      {formatCurrency(item.price)}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Button size="sm" onClick={() => onAddItem(item)}>
-                        Add
-                      </Button>
-                    </td>
+        <div className="flex flex-col sm:flex-row">
+          <div className="border-b border-border/60 px-2.5 py-3 sm:w-36 sm:border-b-0 sm:border-r lg:w-44">
+            <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-col sm:gap-1.5 sm:overflow-visible">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={category === activeCategory ? 'secondary' : 'outline'}
+                  size="sm"
+                  onClick={() => onSelectCategory(category)}
+                  className="whitespace-normal break-words text-center leading-tight sm:w-full sm:max-w-none max-w-[9rem]"
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="max-h-[32rem] overflow-x-auto overflow-y-auto">
+              <table className="min-w-full text-sm">
+                <thead className="sticky top-0 bg-background">
+                  <tr className="text-left text-xs uppercase text-muted-foreground">
+                    <th className="px-4 py-3 font-medium">Item</th>
+                    <th className="px-4 py-3 font-medium text-right">Price</th>
+                    <th className="px-4 py-3" />
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {items.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={3}
+                        className="px-4 py-6 text-center text-xs text-muted-foreground"
+                      >
+                        No items to display. Try a different search.
+                      </td>
+                    </tr>
+                  ) : (
+                    items.map((item) => (
+                      <tr
+                        key={item.id}
+                        className="border-t border-border/60 transition hover:bg-muted/60"
+                      >
+                        <td className="px-4 py-3">
+                          <div className="text-sm font-medium">{item.name}</div>
+                          {item.description ? (
+                            <div className="text-xs text-muted-foreground">{item.description}</div>
+                          ) : null}
+                        </td>
+                        <td className="px-4 py-3 text-right text-sm font-semibold">
+                          {formatCurrency(item.price)}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <Button size="sm" onClick={() => onAddItem(item)}>
+                            Add
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
