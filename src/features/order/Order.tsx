@@ -284,7 +284,7 @@ function ProductList({
       </CardHeader>
       <CardContent className="p-0">
         <div className="flex flex-col sm:flex-row">
-          <div className="border-b border-border/60 px-2.5 py-3 sm:w-36 sm:border-b-0 sm:border-r lg:w-44">
+          <div className="border-b border-border/60 px-2.5 py-3 sm:w-36 sm:border-b-0 sm:border-r">
             <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-col sm:gap-1.5 sm:overflow-visible">
               {categories.map((category) => (
                 <Button
