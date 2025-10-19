@@ -302,13 +302,6 @@ function ProductList({
           <div className="flex-1">
             <div className="max-h-[32rem] overflow-x-auto overflow-y-auto">
               <table className="min-w-full text-sm">
-                <thead className="sticky top-0 bg-background">
-                  <tr className="text-left text-xs uppercase text-muted-foreground">
-                    <th className="px-4 py-3 font-medium">Item</th>
-                    <th className="px-4 py-3 font-medium text-right">Price</th>
-                    <th className="px-4 py-3" />
-                  </tr>
-                </thead>
                 <tbody>
                   {items.length === 0 ? (
                     <tr>
