@@ -8,6 +8,38 @@ import { Textarea } from '@/components/ui/textarea';
 import { useSidebar } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
+// Shared CSS class constants to reduce repetition and keep styling consistent
+const css = {
+  card: 'w-full min-w-0 border bg-background shadow-sm',
+  sectionYTight: 'space-y-0.5 sm:space-y-1',
+  sectionY: 'space-y-2.5 sm:space-y-3',
+  sectionYLoose: 'space-y-3 sm:space-y-4 md:landscape:space-y-2.5',
+  subtle: 'text-xs text-muted-foreground',
+  priceCell: 'px-4 py-3 text-right text-sm font-semibold',
+  itemRow: 'border-t border-border/60 transition hover:bg-muted/60',
+  primaryAction: 'w-full text-sm font-semibold sm:text-base',
+} as const;
+
+// Consolidated responsive layout rules for the category section
+function categoryLayout(isSidebarExpanded: boolean) {
+  const collapsed = !isSidebarExpanded;
+  return {
+    wrapper: cn('flex flex-col xl:flex-row', collapsed && 'sm:flex-row'),
+    nav: cn(
+      'border-b border-border/60 px-2.5 py-3 xl:w-36 xl:border-b-0 xl:border-r',
+      collapsed && 'sm:w-36 sm:border-b-0 sm:border-r',
+    ),
+    navInner: cn(
+      'flex gap-2 overflow-x-auto pb-1 xl:flex-col xl:gap-1.5 xl:overflow-visible',
+      collapsed && 'sm:flex-col sm:gap-1.5 sm:overflow-visible',
+    ),
+    categoryBtn: cn(
+      'whitespace-normal break-words text-center leading-tight max-w-[9rem] xl:w-full xl:max-w-none',
+      collapsed && 'sm:w-full sm:max-w-none',
+    ),
+  } as const;
+}
+
 type InventoryItem = {
   id: string;
   name: string;
@@ -276,7 +308,7 @@ function ProductList({
   isSidebarExpanded,
 }: ProductListProps) {
   return (
-    <Card className="w-full min-w-0 border bg-background shadow-sm">
+    <Card className={css.card}>
       <CardHeader className="space-y-4">
         <CardTitle className="text-lg">Catalogue</CardTitle>
         <Input
@@ -287,76 +319,60 @@ function ProductList({
         />
       </CardHeader>
       <CardContent className="p-0">
-        <div className={cn('flex flex-col xl:flex-row', !isSidebarExpanded && 'sm:flex-row')}>
-          <div
-            className={cn(
-              'border-b border-border/60 px-2.5 py-3 xl:w-36 xl:border-b-0 xl:border-r',
-              !isSidebarExpanded && 'sm:w-36 sm:border-b-0 sm:border-r',
-            )}
-          >
-            <div
-              className={cn(
-                'flex gap-2 overflow-x-auto pb-1 xl:flex-col xl:gap-1.5 xl:overflow-visible',
-                !isSidebarExpanded && 'sm:flex-col sm:gap-1.5 sm:overflow-visible',
-              )}
-            >
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={category === activeCategory ? 'secondary' : 'outline'}
-                  size="sm"
-                  onClick={() => onSelectCategory(category)}
-                  className={cn(
-                    'whitespace-normal break-words text-center leading-tight max-w-[9rem] xl:w-full xl:max-w-none',
-                    !isSidebarExpanded && 'sm:w-full sm:max-w-none',
-                  )}
-                >
-                  {category}
-                </Button>
-              ))}
+        {(() => {
+          const layout = categoryLayout(isSidebarExpanded);
+          return (
+            <div className={layout.wrapper}>
+              <div className={layout.nav}>
+                <div className={layout.navInner}>
+                  {categories.map((category) => (
+                    <Button
+                      key={category}
+                      variant={category === activeCategory ? 'secondary' : 'outline'}
+                      size="sm"
+                      onClick={() => onSelectCategory(category)}
+                      className={layout.categoryBtn}
+                    >
+                      {category}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="max-h-[32rem] overflow-auto">
+                  <table className="min-w-full text-sm">
+                    <tbody>
+                      {items.length === 0 ? (
+                        <tr>
+                          <td colSpan={3} className="px-4 py-6 text-center text-xs text-muted-foreground">
+                            No items to display. Try a different search.
+                          </td>
+                        </tr>
+                      ) : (
+                        items.map((item) => (
+                          <tr key={item.id} className={css.itemRow}>
+                            <td className="px-4 py-3">
+                              <div className="text-sm font-medium">{item.name}</div>
+                              {item.description ? (
+                                <div className={css.subtle}>{item.description}</div>
+                              ) : null}
+                            </td>
+                            <td className={css.priceCell}>{formatCurrency(item.price)}</td>
+                            <td className="px-4 py-3 text-right">
+                              <Button size="sm" onClick={() => onAddItem(item)}>
+                                Add
+                              </Button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex-1">
-            <div className="max-h-[32rem] overflow-auto">
-              <table className="min-w-full text-sm">
-                <tbody>
-                  {items.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={3}
-                        className="px-4 py-6 text-center text-xs text-muted-foreground"
-                      >
-                        No items to display. Try a different search.
-                      </td>
-                    </tr>
-                  ) : (
-                    items.map((item) => (
-                      <tr
-                        key={item.id}
-                        className="border-t border-border/60 transition hover:bg-muted/60"
-                      >
-                        <td className="px-4 py-3">
-                          <div className="text-sm font-medium">{item.name}</div>
-                          {item.description ? (
-                            <div className="text-xs text-muted-foreground">{item.description}</div>
-                          ) : null}
-                        </td>
-                        <td className="px-4 py-3 text-right text-sm font-semibold">
-                          {formatCurrency(item.price)}
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          <Button size="sm" onClick={() => onAddItem(item)}>
-                            Add
-                          </Button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+          );
+        })()}
       </CardContent>
     </Card>
   );
@@ -402,11 +418,11 @@ function OrderPanel({
     feedback !== null;
 
   return (
-    <Card className="w-full min-w-0 border bg-background shadow-sm">
-      <CardHeader className="space-y-0.5 sm:space-y-1">
+    <Card className={css.card}>
+      <CardHeader className={css.sectionYTight}>
         <CardTitle className="text-lg">Order Details</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3 sm:space-y-4 md:landscape:space-y-2.5">
+      <CardContent className={css.sectionYLoose}>
         <div className="space-y-2.5 sm:space-y-3 md:landscape:space-y-2">
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground sm:gap-2 sm:p-6 sm:text-sm">
@@ -460,7 +476,7 @@ function OrderPanel({
           )}
         </div>
         <Separator />
-        <div className="space-y-2.5 sm:space-y-3">
+        <div className={css.sectionY}>
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Subtotal</span>
             <span className="font-medium">{formatCurrency(subtotal)}</span>
@@ -474,7 +490,7 @@ function OrderPanel({
             <span>{formatCurrency(total)}</span>
           </div>
         </div>
-        <div className="space-y-2.5 sm:space-y-3">
+        <div className={css.sectionY}>
           <div className="flex flex-col gap-1 text-sm">
             <Label htmlFor="amount-tendered" className="text-muted-foreground">
               Payment received
@@ -530,14 +546,14 @@ function OrderPanel({
           <Button
             type="button"
             variant="outline"
-            className="w-full text-sm font-semibold sm:text-base"
+            className={css.primaryAction}
             size="lg"
             onClick={onClear}
             disabled={!hasOrderDetails}
           >
             Clear order
           </Button>
-          <Button className="w-full text-sm font-semibold sm:text-base" size="lg" onClick={onCharge}>
+          <Button className={css.primaryAction} size="lg" onClick={onCharge}>
             Charge
           </Button>
           {feedback?.status === 'success' ? (
