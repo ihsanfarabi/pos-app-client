@@ -433,7 +433,7 @@ function OrderPanel({
       <CardHeader className={css.sectionYTight}>
         <CardTitle className="text-lg">Order Details</CardTitle>
       </CardHeader>
-      <CardContent className={css.sectionYLoose}>
+      <CardContent className={cn(css.sectionYLoose, 'px-4 sm:px-6')}>
         <div className="space-y-2.5 sm:space-y-3 md:landscape:space-y-2">
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground sm:gap-2 sm:p-6 sm:text-sm">
