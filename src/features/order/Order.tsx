@@ -35,7 +35,7 @@ function categoryLayout(isSidebarExpanded: boolean) {
       collapsed && 'sm:flex-col sm:gap-1.5 sm:overflow-visible',
     ),
     categoryBtn: cn(
-      'whitespace-nowrap text-center leading-tight xl:w-full xl:max-w-none xl:whitespace-normal xl:break-words',
+      'h-auto min-h-[2rem] whitespace-nowrap text-center leading-tight py-1.5 xl:w-full xl:max-w-none xl:whitespace-normal xl:break-words',
       collapsed &&
         'sm:w-full sm:max-w-none sm:whitespace-normal sm:break-words',
     ),
