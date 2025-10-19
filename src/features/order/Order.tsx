@@ -219,7 +219,12 @@ export default function Order() {
 
   return (
     <div className="flex flex-col gap-2 p-1 sm:gap-3 sm:p-2 md:p-3">
-      <div className="grid gap-3 sm:gap-6 lg:grid-cols-[1.2fr_1fr]">
+      <div
+        className={cn(
+          'grid gap-3 sm:gap-6',
+          isSidebarExpanded ? 'xl:grid-cols-[1.2fr_1fr]' : 'lg:grid-cols-[1.2fr_1fr]',
+        )}
+      >
         <div className="min-w-0">
           <ProductList
             categories={categories}
