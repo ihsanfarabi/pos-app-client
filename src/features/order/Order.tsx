@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { useSidebar } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
 type InventoryItem = {
@@ -133,6 +134,8 @@ export default function Order() {
   const [tendered, setTendered] = useState('');
   const [note, setNote] = useState('');
   const [feedback, setFeedback] = useState<PaymentFeedback | null>(null);
+  const { state: sidebarState } = useSidebar();
+  const isSidebarExpanded = sidebarState === 'expanded';
 
   const categories = useMemo(() => {
     return ['All', ...new Set(INVENTORY.map((item) => item.category))];
@@ -228,6 +231,7 @@ export default function Order() {
             onSearch={setSearchTerm}
             items={filteredItems}
             onAddItem={handleAddItem}
+            isSidebarExpanded={isSidebarExpanded}
           />
         </div>
         <div className="min-w-0">
@@ -260,6 +264,7 @@ type ProductListProps = {
   onSearch: (value: string) => void;
   items: InventoryItem[];
   onAddItem: (item: InventoryItem) => void;
+  isSidebarExpanded: boolean;
 };
 
 function ProductList({
@@ -270,6 +275,7 @@ function ProductList({
   onSearch,
   items,
   onAddItem,
+  isSidebarExpanded,
 }: ProductListProps) {
   return (
     <Card className="w-full min-w-0 border bg-background shadow-sm">
@@ -283,16 +289,29 @@ function ProductList({
         />
       </CardHeader>
       <CardContent className="p-0">
-        <div className="flex flex-col sm:flex-row">
-          <div className="border-b border-border/60 px-2.5 py-3 sm:w-36 sm:border-b-0 sm:border-r">
-            <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-col sm:gap-1.5 sm:overflow-visible">
+        <div className={cn('flex flex-col xl:flex-row', !isSidebarExpanded && 'sm:flex-row')}>
+          <div
+            className={cn(
+              'border-b border-border/60 px-2.5 py-3 xl:w-36 xl:border-b-0 xl:border-r',
+              !isSidebarExpanded && 'sm:w-36 sm:border-b-0 sm:border-r',
+            )}
+          >
+            <div
+              className={cn(
+                'flex gap-2 overflow-x-auto pb-1 xl:flex-col xl:gap-1.5 xl:overflow-visible',
+                !isSidebarExpanded && 'sm:flex-col sm:gap-1.5 sm:overflow-visible',
+              )}
+            >
               {categories.map((category) => (
                 <Button
                   key={category}
                   variant={category === activeCategory ? 'secondary' : 'outline'}
                   size="sm"
                   onClick={() => onSelectCategory(category)}
-                  className="whitespace-normal break-words text-center leading-tight sm:w-full sm:max-w-none max-w-[9rem]"
+                  className={cn(
+                    'whitespace-normal break-words text-center leading-tight max-w-[9rem] xl:w-full xl:max-w-none',
+                    !isSidebarExpanded && 'sm:w-full sm:max-w-none',
+                  )}
                 >
                   {category}
                 </Button>
