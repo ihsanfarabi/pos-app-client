@@ -31,8 +31,8 @@ function categoryLayout(isSidebarExpanded: boolean) {
       collapsed && 'sm:w-36 sm:border-b-0 sm:border-r',
     ),
     navInner: cn(
-      'flex gap-2 overflow-x-auto pb-1 xl:flex-col xl:gap-1.5 xl:overflow-visible',
-      collapsed && 'sm:flex-col sm:gap-1.5 sm:overflow-visible',
+      'flex gap-3 overflow-x-auto pb-1 xl:flex-col xl:gap-2 xl:overflow-visible',
+      collapsed && 'sm:flex-col sm:gap-2 sm:overflow-visible',
     ),
     categoryBtn: cn(
       'h-auto min-h-[2rem] whitespace-nowrap text-center leading-tight py-1.5 xl:w-full xl:max-w-none xl:whitespace-normal xl:break-words',
