@@ -57,7 +57,7 @@ function LayoutContent({ onLogout, activeItemLabel }: LayoutContentProps) {
     <SidebarInset className="flex flex-1 flex-col bg-muted/50">
       <div
         className={cn(
-          'flex h-14 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur',
+          'flex h-14 items-center gap-2 border-b border-border bg-background/80 px-2 backdrop-blur sm:px-3',
           isSidebarExpanded && 'md:px-3',
         )}
       >
@@ -73,8 +73,10 @@ function LayoutContent({ onLogout, activeItemLabel }: LayoutContentProps) {
       <div className="flex-1 overflow-y-auto">
         <div
           className={cn(
-            'mx-auto w-full max-w-7xl px-0 py-0 sm:py-6',
-            isSidebarExpanded ? 'sm:px-4' : 'sm:px-8',
+            'w-full px-1 py-2 transition-[padding]',
+            isSidebarExpanded
+              ? 'sm:px-2 sm:py-2 md:px-3 md:py-3'
+              : 'sm:px-3 sm:py-3 md:px-4 md:py-4',
           )}
         >
           <Outlet />
