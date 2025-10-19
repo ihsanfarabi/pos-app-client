@@ -37,7 +37,7 @@ export default function Layout() {
   }
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <AppSidebar onLogout={handleLogout} />
       <LayoutContent onLogout={handleLogout} activeItemLabel={activeItem?.label} />
     </SidebarProvider>
