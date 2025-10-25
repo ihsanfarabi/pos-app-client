@@ -373,6 +373,12 @@ export default function Order() {
     );
   }
 
+  function handleClearOrder() {
+    setOrder({});
+    setSelectedOrderItemId(null);
+    setDiscount(0);
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-muted/20">
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 pb-8 pt-1 md:px-6 md:pt-2 lg:px-8 lg:pt-4">
@@ -459,7 +465,20 @@ export default function Order() {
           <aside className="flex flex-col">
             <Card className="flex flex-col">
               <CardContent className="flex flex-1 flex-col p-0">
-                <div className="flex-1 overflow-y-auto px-6 py-6">
+                <div className="flex items-center justify-end px-6 pt-6">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 gap-2 text-destructive hover:text-destructive"
+                    onClick={handleClearOrder}
+                    disabled={orderItems.length === 0}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Clear all
+                  </Button>
+                </div>
+                <div className="flex-1 overflow-y-auto px-6 pb-6 pt-4">
                   {orderItems.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
                       Looks a bit empty! Add something from the catalogue.{" "}
