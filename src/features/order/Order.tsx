@@ -465,7 +465,10 @@ export default function Order() {
           <aside className="flex flex-col">
             <Card className="flex flex-col">
               <CardContent className="flex flex-1 flex-col p-0">
-                <div className="flex items-center justify-end px-6 pt-6">
+                <div className="flex items-center justify-between px-6 pt-6">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Order Items
+                  </span>
                   <Button
                     type="button"
                     variant="ghost"
