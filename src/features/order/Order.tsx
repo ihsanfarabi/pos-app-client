@@ -375,7 +375,7 @@ export default function Order() {
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/20">
-      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 pb-8 md:p-6 lg:p-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 pb-8 pt-1 md:px-6 md:pt-2 lg:px-8 lg:pt-4">
         <div className="grid flex-1 gap-6 lg:grid-cols-[2.5fr_1fr]">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between lg:col-span-2">
             <div className="relative w-full sm:max-w-xs">
