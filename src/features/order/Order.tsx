@@ -409,9 +409,7 @@ export default function Order() {
                                 {item.name}
                               </h3>
                               <p className="text-xs text-muted-foreground">
-                                {formatCurrency(item.price)} ·{" "}
-                                {item.categoryId.charAt(0).toUpperCase() +
-                                  item.categoryId.slice(1)}
+                                {formatCurrency(item.price)}
                               </p>
                             </div>
                             <div className="flex items-center gap-2">
