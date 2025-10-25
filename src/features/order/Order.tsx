@@ -362,7 +362,7 @@ export default function Order() {
           </section>
 
           <aside className="flex flex-col">
-            <Card className="flex h-full flex-col">
+            <Card className="flex flex-col">
               <CardHeader className="flex flex-col gap-1">
                 <CardTitle>Order List</CardTitle>
                 <CardDescription>
