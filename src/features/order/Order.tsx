@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -403,15 +402,8 @@ export default function Order() {
 
           <aside className="flex flex-col">
             <Card className="flex flex-col">
-              <CardHeader className="flex flex-col gap-1">
-                <CardTitle>Order List</CardTitle>
-                <CardDescription>
-                  Review selections before sending to the bar.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-1 flex-col gap-4 p-0">
-                <Separator />
-                <div className="flex-1 overflow-y-auto px-6 py-4">
+              <CardContent className="flex flex-1 flex-col p-0">
+                <div className="flex-1 overflow-y-auto px-6 py-6">
                   {orderItems.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
                       Nothing added yet. Tap catalogue items to build the order.
@@ -442,7 +434,7 @@ export default function Order() {
                   )}
                 </div>
                 <Separator />
-                <div className="space-y-4 px-6 pb-6">
+                <div className="space-y-4 px-6 pb-6 pt-4">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="order-discount">Discount</Label>
