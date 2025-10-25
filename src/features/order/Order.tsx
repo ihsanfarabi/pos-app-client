@@ -624,12 +624,22 @@ export default function Order() {
                       ))}
                     </div>
                   </div>
-                  <Button
-                    className="w-full py-6 text-base font-semibold"
-                    disabled={orderItems.length === 0}
-                  >
-                    Send order
-                  </Button>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full flex-1 py-6 text-base font-semibold"
+                      disabled={orderItems.length === 0}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      className="w-full flex-1 py-6 text-base font-semibold"
+                      disabled={orderItems.length === 0}
+                    >
+                      Charge
+                    </Button>
+                  </div>
                 </div>
               </CardFooter>
             </Card>
