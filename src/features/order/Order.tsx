@@ -390,7 +390,7 @@ export default function Order() {
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 aria-label="Search menu items"
-                className="w-full pl-9"
+                className="w-full bg-card pl-9"
               />
             </div>
           </div>
