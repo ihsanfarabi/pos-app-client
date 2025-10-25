@@ -9,6 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
@@ -243,6 +245,10 @@ export default function Order() {
   const [activeCategory, setActiveCategory] = useState("");
   const [order, setOrder] = useState<OrderState>({});
   const [shouldReduceColumns, setShouldReduceColumns] = useState(false);
+  const [discount, setDiscount] = useState(0);
+  const [discountType, setDiscountType] = useState<"amount" | "percent">(
+    "amount"
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -274,8 +280,39 @@ export default function Order() {
       0
     );
   }, [orderItems]);
-  const estimatedTax = subtotal * TAX_RATE;
-  const totalDue = subtotal + estimatedTax;
+  const discountAmount = useMemo(() => {
+    if (subtotal <= 0) {
+      return 0;
+    }
+
+    const sanitized = Number.isFinite(discount) ? Math.max(discount, 0) : 0;
+    if (discountType === "percent") {
+      const cappedPercent = Math.min(sanitized, 100);
+      return subtotal * (cappedPercent / 100);
+    }
+
+    return Math.min(sanitized, subtotal);
+  }, [discount, discountType, subtotal]);
+  const taxableSubtotal = Math.max(subtotal - discountAmount, 0);
+  const estimatedTax = taxableSubtotal * TAX_RATE;
+  const totalDue = taxableSubtotal + estimatedTax;
+
+  useEffect(() => {
+    if (discountType === "percent") {
+      if (discount <= 100) {
+        return;
+      }
+
+      setDiscount(100);
+      return;
+    }
+
+    if (discount <= subtotal) {
+      return;
+    }
+
+    setDiscount(subtotal);
+  }, [discount, discountType, subtotal]);
 
   const categoryGridClasses = cn(
     "grid w-full grid-cols-2 gap-2 sm:grid-cols-3",
@@ -402,11 +439,70 @@ export default function Order() {
                   )}
                 </div>
                 <Separator />
-                <div className="space-y-3 px-6 pb-6">
+                <div className="space-y-4 px-6 pb-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="order-discount">Discount</Label>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={discountType === "amount" ? "default" : "outline"}
+                          onClick={() => setDiscountType("amount")}
+                          disabled={orderItems.length === 0}
+                        >
+                          Amount
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={discountType === "percent" ? "default" : "outline"}
+                          onClick={() => setDiscountType("percent")}
+                          disabled={orderItems.length === 0}
+                        >
+                          Percent
+                        </Button>
+                      </div>
+                    </div>
+                    <Input
+                      id="order-discount"
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      value={Number.isFinite(discount) ? discount : ""}
+                      onChange={(event) => {
+                        const parsed = Number.parseFloat(event.target.value);
+                        if (!Number.isFinite(parsed)) {
+                          setDiscount(0);
+                          return;
+                        }
+
+                        const sanitized = Math.max(0, parsed);
+                        setDiscount(
+                          discountType === "percent"
+                            ? Math.min(sanitized, 100)
+                            : sanitized
+                        );
+                      }}
+                      placeholder={discountType === "percent" ? "0" : "0.00"}
+                      disabled={orderItems.length === 0}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {discountType === "percent"
+                        ? "Percentage is applied to the subtotal before tax."
+                        : "Amount is deducted from the subtotal before tax."}
+                    </p>
+                  </div>
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <span>Subtotal</span>
                     <span className="font-medium text-foreground">
                       {formatCurrency(subtotal)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <span>Discount</span>
+                    <span className="font-medium text-foreground">
+                      -{formatCurrency(discountAmount)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
