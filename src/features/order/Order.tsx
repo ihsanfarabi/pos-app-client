@@ -377,25 +377,25 @@ export default function Order() {
     <div className="flex min-h-screen flex-col bg-muted/20">
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 pb-8 md:p-6 lg:p-8">
         <div className="grid flex-1 gap-6 lg:grid-cols-[2.5fr_1fr]">
-          <section className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="relative w-full sm:max-w-xs">
-                <Search
-                  aria-hidden="true"
-                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="order-search"
-                  type="search"
-                  placeholder="Search"
-                  value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                  aria-label="Search menu items"
-                  className="w-full pl-9"
-                />
-              </div>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between lg:col-span-2">
+            <div className="relative w-full sm:max-w-xs">
+              <Search
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              />
+              <Input
+                id="order-search"
+                type="search"
+                placeholder="Search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                aria-label="Search menu items"
+                className="w-full pl-9"
+              />
             </div>
+          </div>
 
+          <section className="flex flex-col gap-4">
             <div className={categoryGridClasses}>
               {categories.map((category) => (
                 <Button
