@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
-import { Banknote, CreditCard, QrCode, Trash2 } from "lucide-react";
+import { Banknote, CreditCard, QrCode, Search, Trash2 } from "lucide-react";
 
 type Category = {
   id: string;
@@ -259,6 +259,7 @@ export default function Order() {
   const { state } = useSidebar();
   const isSidebarExpanded = state === "expanded";
   const [activeCategory, setActiveCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [order, setOrder] = useState<OrderState>({});
   const [shouldReduceColumns, setShouldReduceColumns] = useState(false);
   const [discount, setDiscount] = useState(0);
@@ -284,13 +285,18 @@ export default function Order() {
     return () => window.removeEventListener("resize", evaluateShouldReduce);
   }, [isSidebarExpanded]);
 
-  const items = useMemo(
-    () =>
-      catalogue.filter((product) =>
-        activeCategory ? product.categoryId === activeCategory : true
-      ),
-    [activeCategory]
-  );
+  const items = useMemo(() => {
+    const normalizedQuery = searchTerm.trim().toLowerCase();
+    return catalogue.filter((product) => {
+      const matchesCategory = activeCategory
+        ? product.categoryId === activeCategory
+        : true;
+      const matchesSearch = normalizedQuery
+        ? product.name.toLowerCase().includes(normalizedQuery)
+        : true;
+      return matchesCategory && matchesSearch;
+    });
+  }, [activeCategory, searchTerm]);
 
   const orderItems = useMemo(() => Object.values(order), [order]);
 
@@ -372,6 +378,24 @@ export default function Order() {
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 pb-8 md:p-6 lg:p-8">
         <div className="grid flex-1 gap-6 lg:grid-cols-[2.5fr_1fr]">
           <section className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="relative w-full sm:max-w-xs">
+                <Search
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                />
+                <Input
+                  id="order-search"
+                  type="search"
+                  placeholder="Search"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  aria-label="Search menu items"
+                  className="w-full pl-9"
+                />
+              </div>
+            </div>
+
             <div className={categoryGridClasses}>
               {categories.map((category) => (
                 <Button
@@ -421,7 +445,11 @@ export default function Order() {
               {items.length === 0 && (
                 <Card className="col-span-full border-dashed border-primary/30 bg-background/70">
                   <CardContent className="flex min-h-[180px] items-center justify-center text-center text-muted-foreground">
-                    No items available in this category yet.
+                    {searchTerm.trim()
+                      ? "No items found for your search."
+                      : activeCategory
+                        ? "No items available in this category yet."
+                        : "No items available yet."}
                   </CardContent>
                 </Card>
               )}
