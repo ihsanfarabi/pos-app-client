@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
@@ -299,27 +300,6 @@ export default function Order() {
     });
   }
 
-  function handleDecrease(itemId: string) {
-    setOrder((previous) => {
-      const existing = previous[itemId];
-      if (!existing) return previous;
-
-      if (existing.quantity === 1) {
-        const updatedState = { ...previous };
-        delete updatedState[itemId];
-        return updatedState;
-      }
-
-      return {
-        ...previous,
-        [itemId]: {
-          ...existing,
-          quantity: existing.quantity - 1,
-        },
-      };
-    });
-  }
-
   return (
     <div className="flex min-h-screen flex-col bg-muted/20">
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 pb-8 md:p-6 lg:p-8">
@@ -403,39 +383,16 @@ export default function Order() {
                           key={item.id}
                           className="rounded-lg border border-border/80 bg-muted/40 p-4 shadow-sm"
                         >
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2">
                               <h3 className="text-base font-semibold">
                                 {item.name}
                               </h3>
-                              <p className="text-xs text-muted-foreground">
-                                {formatCurrency(item.price)}
-                              </p>
+                              <Badge variant="secondary" className="px-2">
+                                x{quantity}
+                              </Badge>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                size="icon"
-                                variant="outline"
-                                onClick={() => handleDecrease(item.id)}
-                                aria-label={`Decrease ${item.name} quantity`}
-                              >
-                                –
-                              </Button>
-                              <span className="w-6 text-center text-sm font-medium">
-                                {quantity}
-                              </span>
-                              <Button
-                                size="icon"
-                                onClick={() => handleAddToOrder(item)}
-                                aria-label={`Increase ${item.name} quantity`}
-                              >
-                                +
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
-                            <span>Line total</span>
-                            <span className="font-semibold text-foreground">
+                            <span className="text-sm font-semibold text-foreground">
                               {formatCurrency(item.price * quantity)}
                             </span>
                           </div>
