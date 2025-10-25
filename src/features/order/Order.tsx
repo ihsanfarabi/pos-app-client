@@ -35,7 +35,7 @@ type OrderState = Record<
   }
 >;
 
-const TAX_RATE = 0.07;
+const TAX_RATE = 0.1;
 
 const categories: Category[] = [
   { id: "coffee", name: "Coffee" },
@@ -517,13 +517,13 @@ export default function Order() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <span>Estimated tax</span>
+                    <span>Tax 10%</span>
                     <span className="font-medium text-foreground">
                       {formatCurrency(estimatedTax)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-lg font-semibold text-foreground">
-                    <span>Total due</span>
+                    <span>Total</span>
                     <span>{formatCurrency(totalDue)}</span>
                   </div>
                 </div>
