@@ -367,7 +367,7 @@ export default function Order() {
                   variant={
                     activeCategory === category.id ? "default" : "outline"
                   }
-                  className="h-10 w-full justify-center text-sm font-medium"
+                  className="h-12 w-full justify-center text-sm font-medium"
                   onClick={() =>
                     setActiveCategory((current) =>
                       current === category.id ? "" : category.id
