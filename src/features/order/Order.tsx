@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import type { LucideIcon } from "lucide-react";
+import { Banknote, CreditCard, QrCode } from "lucide-react";
 
 type Category = {
   id: string;
@@ -34,7 +36,19 @@ type OrderState = Record<
   }
 >;
 
+type PaymentMethod = "cash" | "debit-card" | "e-wallet";
+
 const TAX_RATE = 0.1;
+
+const PAYMENT_METHODS: {
+  id: PaymentMethod;
+  label: string;
+  icon: LucideIcon;
+}[] = [
+  { id: "cash", label: "Cash", icon: Banknote },
+  { id: "debit-card", label: "Debit Card", icon: CreditCard },
+  { id: "e-wallet", label: "E-Wallet", icon: QrCode },
+];
 
 const categories: Category[] = [
   { id: "coffee", name: "Coffee" },
@@ -251,6 +265,7 @@ export default function Order() {
   const [discountType, setDiscountType] = useState<"amount" | "percent">(
     "amount"
   );
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -352,7 +367,7 @@ export default function Order() {
                   variant={
                     activeCategory === category.id ? "default" : "outline"
                   }
-                  className="h-12 w-full justify-center text-sm font-medium"
+                  className="h-10 w-full justify-center text-sm font-medium"
                   onClick={() =>
                     setActiveCategory((current) =>
                       current === category.id ? "" : category.id
@@ -527,12 +542,44 @@ export default function Order() {
                 </div>
               </CardContent>
               <CardFooter className="border-t bg-muted/30 p-6">
-                <Button
-                  className="w-full py-6 text-base font-semibold"
-                  disabled={orderItems.length === 0}
-                >
-                  Send order · {formatCurrency(totalDue)}
-                </Button>
+                <div className="w-full space-y-8">
+                  <div className="space-y-2">
+                    <Label>Payment method</Label>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                      {PAYMENT_METHODS.map((method) => (
+                        <div
+                          key={method.id}
+                          className="flex flex-col items-center gap-2"
+                        >
+                          <Button
+                            type="button"
+                            aria-label={method.label}
+                            title={method.label}
+                            className="flex h-12 w-full items-center justify-center"
+                            variant={
+                              paymentMethod === method.id
+                                ? "default"
+                                : "outline"
+                            }
+                            onClick={() => setPaymentMethod(method.id)}
+                            disabled={orderItems.length === 0}
+                          >
+                            <method.icon className="h-6 w-6" />
+                          </Button>
+                          <span className="text-xs font-medium text-muted-foreground">
+                            {method.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full py-6 text-base font-semibold"
+                    disabled={orderItems.length === 0}
+                  >
+                    Send order
+                  </Button>
+                </div>
               </CardFooter>
             </Card>
           </aside>
