@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -241,6 +241,21 @@ export default function Order() {
   const isSidebarExpanded = state === "expanded";
   const [activeCategory, setActiveCategory] = useState("");
   const [order, setOrder] = useState<OrderState>({});
+  const [shouldReduceColumns, setShouldReduceColumns] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const evaluateShouldReduce = () => {
+      setShouldReduceColumns(isSidebarExpanded && window.innerWidth < 1280);
+    };
+
+    evaluateShouldReduce();
+    window.addEventListener("resize", evaluateShouldReduce);
+    return () => window.removeEventListener("resize", evaluateShouldReduce);
+  }, [isSidebarExpanded]);
 
   const items = useMemo(
     () =>
@@ -263,12 +278,12 @@ export default function Order() {
 
   const categoryGridClasses = cn(
     "grid w-full grid-cols-2 gap-2 sm:grid-cols-3",
-    isSidebarExpanded ? "lg:grid-cols-3" : "lg:grid-cols-4"
+    shouldReduceColumns ? "lg:grid-cols-3" : "lg:grid-cols-4"
   );
 
   const catalogueGridClasses = cn(
     "grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3",
-    isSidebarExpanded ? "lg:grid-cols-3" : "lg:grid-cols-4"
+    shouldReduceColumns ? "lg:grid-cols-3" : "lg:grid-cols-4"
   );
 
   function handleAddToOrder(item: CatalogueItem) {
