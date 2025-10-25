@@ -1,564 +1,468 @@
-import { useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
-import { useSidebar } from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
+import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
-// Shared CSS class constants to reduce repetition and keep styling consistent
-const css = {
-  card: 'w-full min-w-0 border bg-background shadow-sm',
-  sectionYTight: 'space-y-0.5 sm:space-y-1',
-  sectionY: 'space-y-2.5 sm:space-y-3',
-  sectionYLoose: 'space-y-3 sm:space-y-4 md:landscape:space-y-2.5',
-  subtle: 'text-xs text-muted-foreground',
-  priceCell: 'px-4 py-3 text-right text-sm font-semibold',
-  itemRow: 'border-t border-border/60 transition hover:bg-muted/60',
-  primaryAction: 'w-full text-sm font-semibold sm:text-base',
-} as const;
-
-// Consolidated responsive layout rules for the category section
-function categoryLayout(isSidebarExpanded: boolean) {
-  const collapsed = !isSidebarExpanded;
-  return {
-    wrapper: cn('flex flex-col xl:flex-row', collapsed && 'sm:flex-row'),
-    nav: cn(
-      'border-b border-border/60 px-2.5 py-3 xl:w-36 xl:border-b-0 xl:border-r',
-      collapsed && 'sm:w-36 sm:border-b-0 sm:border-r',
-    ),
-    navInner: cn(
-      'flex gap-3 overflow-x-auto pb-1 xl:flex-col xl:gap-2 xl:overflow-visible',
-      collapsed && 'sm:flex-col sm:gap-2 sm:overflow-visible',
-    ),
-    categoryBtn: cn(
-      'h-auto min-h-[2rem] whitespace-nowrap text-center leading-tight py-1.5 xl:w-full xl:max-w-none xl:whitespace-normal xl:break-words',
-      collapsed &&
-        'sm:w-full sm:max-w-none sm:whitespace-normal sm:break-words',
-    ),
-  } as const;
-}
-
-type InventoryItem = {
+type Category = {
   id: string;
   name: string;
-  category: string;
-  price: number;
 };
 
-type CartLineItem = {
+type CatalogueItem = {
   id: string;
   name: string;
   price: number;
-  quantity: number;
+  categoryId: string;
 };
 
-type PaymentFeedback =
-  | { status: 'success'; message: string; changeDue: number; reference: string }
-  | { status: 'error'; message: string };
+type OrderState = Record<
+  CatalogueItem["id"],
+  {
+    item: CatalogueItem;
+    quantity: number;
+  }
+>;
 
-const INVENTORY: InventoryItem[] = [
+const TAX_RATE = 0.07;
+
+const categories: Category[] = [
+  { id: "coffee", name: "Coffee" },
+  { id: "tea", name: "Tea" },
+  { id: "pastries", name: "Pastries" },
+  { id: "sandwiches", name: "Sandwiches" },
+  { id: "specials", name: "Seasonal Specials" },
+  { id: "smoothies", name: "Smoothies" },
+  { id: "breakfast", name: "Breakfast" },
+  { id: "merch", name: "Merchandise" },
+];
+
+const catalogue: CatalogueItem[] = [
   {
-    id: 'double-espresso',
-    name: 'Double Espresso',
-    category: 'Espresso Bar',
-    price: 28000,
+    id: "americano",
+    name: "Americano",
+    price: 4.25,
+    categoryId: "coffee",
   },
   {
-    id: 'flat-white',
-    name: 'Flat White',
-    category: 'Espresso Bar',
-    price: 35000,
+    id: "flat-white",
+    name: "Flat White",
+    price: 5.25,
+    categoryId: "coffee",
   },
   {
-    id: 'oat-latte',
-    name: 'Oat Milk Latte',
-    category: 'Espresso Bar',
-    price: 38000,
+    id: "cortado",
+    name: "Cortado",
+    price: 4.75,
+    categoryId: "coffee",
   },
   {
-    id: 'v60-sumatra',
-    name: 'V60 Single Origin: Sumatra Lintong',
-    category: 'Brew Bar',
-    price: 45000,
+    id: "iced-latte",
+    name: "Iced Latte",
+    price: 5.75,
+    categoryId: "coffee",
   },
   {
-    id: 'aeropress-ethiopia',
-    name: 'Aeropress Ethiopia Guji',
-    category: 'Brew Bar',
-    price: 42000,
+    id: "mocha",
+    name: "Chocolate Mocha",
+    price: 5.95,
+    categoryId: "coffee",
   },
   {
-    id: 'nitro-cold-brew',
-    name: 'Nitro Cold Brew',
-    category: 'Cold Coffee',
-    price: 48000,
+    id: "matcha",
+    name: "Matcha Latte",
+    price: 6.0,
+    categoryId: "tea",
   },
   {
-    id: 'salted-caramel-cold-brew',
-    name: 'Salted Caramel Cream Cold Brew',
-    category: 'Cold Coffee',
-    price: 52000,
+    id: "chai",
+    name: "Dirty Chai",
+    price: 5.5,
+    categoryId: "tea",
   },
   {
-    id: 'matcha-tonic',
-    name: 'Matcha Tonic',
-    category: 'Tea & Refreshers',
-    price: 42000,
+    id: "earl-grey",
+    name: "London Fog",
+    price: 4.85,
+    categoryId: "tea",
   },
   {
-    id: 'spiced-chai',
-    name: 'Spiced Chai Latte',
-    category: 'Tea & Refreshers',
-    price: 36000,
+    id: "cold-brew",
+    name: "Cold Brew",
+    price: 5.0,
+    categoryId: "tea",
   },
   {
-    id: 'brown-butter-croissant',
-    name: 'Brown Butter Croissant',
-    category: 'Pastry Case',
-    price: 32000,
+    id: "hibiscus-iced",
+    name: "Hibiscus Iced Tea",
+    price: 4.5,
+    categoryId: "tea",
   },
   {
-    id: 'walnut-banana-bread',
-    name: 'Walnut Banana Bread',
-    category: 'Pastry Case',
-    price: 28000,
+    id: "croissant",
+    name: "Butter Croissant",
+    price: 3.5,
+    categoryId: "pastries",
   },
   {
-    id: 'cold-brew-oats',
-    name: 'Vanilla Cold Brew Oats',
-    category: 'Grab & Go',
-    price: 34000,
+    id: "muffin",
+    name: "Blueberry Muffin",
+    price: 3.75,
+    categoryId: "pastries",
+  },
+  {
+    id: "chocolate-chip-cookie",
+    name: "Chocolate Chunk Cookie",
+    price: 3.25,
+    categoryId: "pastries",
+  },
+  {
+    id: "cinnamon-roll",
+    name: "Cinnamon Roll",
+    price: 4.25,
+    categoryId: "pastries",
+  },
+  {
+    id: "bagel",
+    name: "Everything Bagel",
+    price: 4.0,
+    categoryId: "pastries",
+  },
+  {
+    id: "club-sandwich",
+    name: "Roasted Turkey Club",
+    price: 9.5,
+    categoryId: "sandwiches",
+  },
+  {
+    id: "caprese",
+    name: "Caprese Ciabatta",
+    price: 8.75,
+    categoryId: "sandwiches",
+  },
+  {
+    id: "veggie-wrap",
+    name: "Grilled Veggie Wrap",
+    price: 8.25,
+    categoryId: "sandwiches",
+  },
+  {
+    id: "prosciutto-panini",
+    name: "Prosciutto Panini",
+    price: 10.25,
+    categoryId: "sandwiches",
+  },
+  {
+    id: "soup-combo",
+    name: "Soup & Half Sandwich",
+    price: 10.0,
+    categoryId: "specials",
+  },
+  {
+    id: "pumpkin-latte",
+    name: "Pumpkin Spice Latte",
+    price: 6.25,
+    categoryId: "specials",
+  },
+  {
+    id: "citrus-fizz",
+    name: "Citrus Espresso Fizz",
+    price: 5.9,
+    categoryId: "specials",
+  },
+  {
+    id: "tasting-board",
+    name: "Chef Tasting Board",
+    price: 14.5,
+    categoryId: "specials",
+  },
+  {
+    id: "avocado-toast",
+    name: "Avocado Toast",
+    price: 7.25,
+    categoryId: "specials",
+  },
+  {
+    id: "berry-breeze",
+    name: "Berry Breeze Smoothie",
+    price: 6.5,
+    categoryId: "smoothies",
+  },
+  {
+    id: "tropical-sunrise",
+    name: "Tropical Sunrise Smoothie",
+    price: 6.75,
+    categoryId: "smoothies",
+  },
+  {
+    id: "breakfast-burrito",
+    name: "Veggie Breakfast Burrito",
+    price: 8.95,
+    categoryId: "breakfast",
+  },
+  {
+    id: "overnight-oats",
+    name: "Maple Overnight Oats",
+    price: 5.5,
+    categoryId: "breakfast",
+  },
+  {
+    id: "house-blend-beans",
+    name: "House Blend Beans (12oz)",
+    price: 15.0,
+    categoryId: "merch",
+  },
+  {
+    id: "ceramic-mug",
+    name: "Signature Ceramic Mug",
+    price: 18.0,
+    categoryId: "merch",
   },
 ];
 
-const TAX_RATE = 0.0825;
-
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
+function formatCurrency(amount: number) {
+  return amount.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  });
+}
 
 export default function Order() {
-  const [activeCategory, setActiveCategory] = useState<string>('All');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [cart, setCart] = useState<CartLineItem[]>([]);
-  const [tendered, setTendered] = useState('');
-  const [note, setNote] = useState('');
-  const [feedback, setFeedback] = useState<PaymentFeedback | null>(null);
-  const { state: sidebarState } = useSidebar();
-  const isSidebarExpanded = sidebarState === 'expanded';
+  const { state } = useSidebar();
+  const isSidebarExpanded = state === "expanded";
+  const [activeCategory, setActiveCategory] = useState("");
+  const [order, setOrder] = useState<OrderState>({});
 
-  const categories = useMemo(() => {
-    return ['All', ...new Set(INVENTORY.map((item) => item.category))];
-  }, []);
-
-  const filteredItems = useMemo(() => {
-    const normalizedTerm = searchTerm.trim().toLowerCase();
-    return INVENTORY.filter((item) => {
-      const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
-      const matchesTerm =
-        normalizedTerm.length === 0 || item.name.toLowerCase().includes(normalizedTerm);
-      return matchesCategory && matchesTerm;
-    }).sort((a, b) => a.name.localeCompare(b.name));
-  }, [activeCategory, searchTerm]);
-
-  const subtotal = useMemo(
-    () => cart.reduce((acc, item) => acc + item.price * item.quantity, 0),
-    [cart],
+  const items = useMemo(
+    () =>
+      catalogue.filter((product) =>
+        activeCategory ? product.categoryId === activeCategory : true
+      ),
+    [activeCategory]
   );
-  const tax = useMemo(() => subtotal * TAX_RATE, [subtotal]);
-  const total = useMemo(() => subtotal + tax, [subtotal, tax]);
-  const amountTendered = Number.parseFloat(tendered);
-  const changeDue = !Number.isNaN(amountTendered) ? Math.max(amountTendered - total, 0) : 0;
 
-  const handleAddItem = (item: InventoryItem) => {
-    setCart((previous) => {
-      const existing = previous.find((line) => line.id === item.id);
-      if (existing) {
-        return previous.map((line) =>
-          line.id === item.id ? { ...line, quantity: line.quantity + 1 } : line,
-        );
-      }
-      return [...previous, { id: item.id, name: item.name, price: item.price, quantity: 1 }];
-    });
-    setFeedback(null);
-  };
+  const orderItems = useMemo(() => Object.values(order), [order]);
 
-  const handleAdjustQuantity = (id: string, delta: number) => {
-    setCart((previous) =>
-      previous
-        .map((line) =>
-          line.id === id ? { ...line, quantity: Math.max(line.quantity + delta, 0) } : line,
-        )
-        .filter((line) => line.quantity > 0),
+  const subtotal = useMemo(() => {
+    return orderItems.reduce(
+      (total, current) => total + current.item.price * current.quantity,
+      0
     );
-  };
+  }, [orderItems]);
+  const estimatedTax = subtotal * TAX_RATE;
+  const totalDue = subtotal + estimatedTax;
 
-  const handleCharge = () => {
-    if (cart.length === 0) {
-      setFeedback({ status: 'error', message: 'Add at least one item before charging.' });
-      return;
-    }
+  const categoryGridClasses = cn(
+    "grid w-full grid-cols-2 gap-2 sm:grid-cols-3",
+    isSidebarExpanded ? "lg:grid-cols-3" : "lg:grid-cols-4"
+  );
 
-    const parsedTendered = Number.parseFloat(tendered);
-    if (Number.isNaN(parsedTendered) || parsedTendered <= 0) {
-      setFeedback({ status: 'error', message: 'Enter a valid amount tendered to continue.' });
-      return;
-    }
+  const catalogueGridClasses = cn(
+    "grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3",
+    isSidebarExpanded ? "lg:grid-cols-3" : "lg:grid-cols-4"
+  );
 
-    if (parsedTendered < total) {
-      setFeedback({ status: 'error', message: 'Amount tendered must cover the ticket total.' });
-      return;
-    }
-
-    const reference = `TKT-${Date.now().toString().slice(-6)}`;
-    setFeedback({
-      status: 'success',
-      message: 'Payment accepted. Ticket closed.',
-      changeDue: parsedTendered - total,
-      reference,
+  function handleAddToOrder(item: CatalogueItem) {
+    setOrder((previous) => {
+      const existing = previous[item.id];
+      return {
+        ...previous,
+        [item.id]: {
+          item,
+          quantity: existing ? existing.quantity + 1 : 1,
+        },
+      };
     });
-    setCart([]);
-    setTendered('');
-    setNote('');
-  };
+  }
 
-  const handleClearOrder = () => {
-    setCart([]);
-    setTendered('');
-    setNote('');
-    setFeedback(null);
-  };
+  function handleDecrease(itemId: string) {
+    setOrder((previous) => {
+      const existing = previous[itemId];
+      if (!existing) return previous;
+
+      if (existing.quantity === 1) {
+        const updatedState = { ...previous };
+        delete updatedState[itemId];
+        return updatedState;
+      }
+
+      return {
+        ...previous,
+        [itemId]: {
+          ...existing,
+          quantity: existing.quantity - 1,
+        },
+      };
+    });
+  }
 
   return (
-    <div className="flex flex-col gap-2 p-1 sm:gap-3 sm:p-2 md:p-3">
-      <div className="grid gap-3 sm:gap-6 lg:grid-cols-[1.2fr_1fr]">
-        <div className="min-w-0">
-          <ProductList
-            categories={categories}
-            activeCategory={activeCategory}
-            onSelectCategory={setActiveCategory}
-            searchTerm={searchTerm}
-            onSearch={setSearchTerm}
-            items={filteredItems}
-            onAddItem={handleAddItem}
-            isSidebarExpanded={isSidebarExpanded}
-          />
-        </div>
-        <div className="min-w-0">
-          <OrderPanel
-            cart={cart}
-            onAdjustQuantity={handleAdjustQuantity}
-            subtotal={subtotal}
-            tax={tax}
-            total={total}
-            tendered={tendered}
-            onTenderedChange={setTendered}
-            note={note}
-            onNoteChange={setNote}
-            feedback={feedback}
-            changeDue={changeDue}
-            onCharge={handleCharge}
-            onClear={handleClearOrder}
-          />
+    <div className="flex min-h-screen flex-col bg-muted/20">
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 pb-8 md:p-6 lg:p-8">
+        <div className="grid flex-1 gap-6 lg:grid-cols-[2.5fr_1fr]">
+          <section className="flex flex-col gap-4">
+            <div className={categoryGridClasses}>
+              {categories.map((category) => (
+                <Button
+                  key={category.id}
+                  size="sm"
+                  variant={
+                    activeCategory === category.id ? "default" : "outline"
+                  }
+                  className="h-12 w-full justify-center text-sm font-medium"
+                  onClick={() =>
+                    setActiveCategory((current) =>
+                      current === category.id ? "" : category.id
+                    )
+                  }
+                >
+                  {category.name}
+                </Button>
+              ))}
+            </div>
+
+            <div className={catalogueGridClasses}>
+              {items.map((item) => (
+                <Card
+                  key={item.id}
+                  className="flex h-full flex-col border-border/80 transition hover:border-primary/70 hover:shadow-lg"
+                >
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg font-semibold">
+                      {item.name}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex flex-1 items-end justify-between">
+                    <span className="text-base font-semibold text-foreground">
+                      {formatCurrency(item.price)}
+                    </span>
+                  </CardContent>
+                  <CardFooter className="pt-2">
+                    <Button
+                      className="w-full"
+                      onClick={() => handleAddToOrder(item)}
+                    >
+                      Add to order
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+              {items.length === 0 && (
+                <Card className="col-span-full border-dashed border-primary/30 bg-background/70">
+                  <CardContent className="flex min-h-[180px] items-center justify-center text-center text-muted-foreground">
+                    No items available in this category yet.
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </section>
+
+          <aside className="flex flex-col">
+            <Card className="flex h-full flex-col">
+              <CardHeader className="flex flex-col gap-1">
+                <CardTitle>Order List</CardTitle>
+                <CardDescription>
+                  Review selections before sending to the bar.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-1 flex-col gap-4 p-0">
+                <Separator />
+                <div className="flex-1 overflow-y-auto px-6 py-4">
+                  {orderItems.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      Nothing added yet. Tap catalogue items to build the order.
+                    </p>
+                  ) : (
+                    <div className="space-y-4">
+                      {orderItems.map(({ item, quantity }) => (
+                        <div
+                          key={item.id}
+                          className="rounded-lg border border-border/80 bg-muted/40 p-4 shadow-sm"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <h3 className="text-base font-semibold">
+                                {item.name}
+                              </h3>
+                              <p className="text-xs text-muted-foreground">
+                                {formatCurrency(item.price)} ·{" "}
+                                {item.categoryId.charAt(0).toUpperCase() +
+                                  item.categoryId.slice(1)}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                onClick={() => handleDecrease(item.id)}
+                                aria-label={`Decrease ${item.name} quantity`}
+                              >
+                                –
+                              </Button>
+                              <span className="w-6 text-center text-sm font-medium">
+                                {quantity}
+                              </span>
+                              <Button
+                                size="icon"
+                                onClick={() => handleAddToOrder(item)}
+                                aria-label={`Increase ${item.name} quantity`}
+                              >
+                                +
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="mt-3 flex items-center justify-between text-sm text-muted-foreground">
+                            <span>Line total</span>
+                            <span className="font-semibold text-foreground">
+                              {formatCurrency(item.price * quantity)}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <Separator />
+                <div className="space-y-3 px-6 pb-6">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <span>Subtotal</span>
+                    <span className="font-medium text-foreground">
+                      {formatCurrency(subtotal)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <span>Estimated tax</span>
+                    <span className="font-medium text-foreground">
+                      {formatCurrency(estimatedTax)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-lg font-semibold text-foreground">
+                    <span>Total due</span>
+                    <span>{formatCurrency(totalDue)}</span>
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="border-t bg-muted/30 p-6">
+                <Button
+                  className="w-full py-6 text-base font-semibold"
+                  disabled={orderItems.length === 0}
+                >
+                  Send order · {formatCurrency(totalDue)}
+                </Button>
+              </CardFooter>
+            </Card>
+          </aside>
         </div>
       </div>
     </div>
-  );
-}
-
-type ProductListProps = {
-  categories: string[];
-  activeCategory: string;
-  onSelectCategory: (category: string) => void;
-  searchTerm: string;
-  onSearch: (value: string) => void;
-  items: InventoryItem[];
-  onAddItem: (item: InventoryItem) => void;
-  isSidebarExpanded: boolean;
-};
-
-function ProductList({
-  categories,
-  activeCategory,
-  onSelectCategory,
-  searchTerm,
-  onSearch,
-  items,
-  onAddItem,
-  isSidebarExpanded,
-}: ProductListProps) {
-  return (
-    <Card className={css.card}>
-      <CardHeader className="space-y-0">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <CardTitle className="text-lg">Catalogue</CardTitle>
-          <div className="relative min-w-[8rem] max-w-[12rem] sm:flex-1 sm:max-w-[16rem]">
-            <Label htmlFor="catalogue-search" className="sr-only">
-              Filter catalogue
-            </Label>
-            <Input
-              id="catalogue-search"
-              type="search"
-              placeholder="Search catalogue"
-              value={searchTerm}
-              onChange={(event) => onSearch(event.target.value)}
-              className="h-10 w-full pl-8"
-            />
-            <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="p-0">
-        {(() => {
-          const layout = categoryLayout(isSidebarExpanded);
-          return (
-            <div className={layout.wrapper}>
-              <div className={layout.nav}>
-                <div className={layout.navInner}>
-                  {categories.map((category) => (
-                    <Button
-                      key={category}
-                      variant={category === activeCategory ? 'secondary' : 'outline'}
-                      size="sm"
-                      onClick={() => onSelectCategory(category)}
-                      className={layout.categoryBtn}
-                    >
-                      {category}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              <div className="flex-1">
-                <div className="max-h-[32rem] overflow-auto">
-                  <table className="min-w-full text-sm">
-                    <tbody>
-                      {items.length === 0 ? (
-                        <tr>
-                          <td colSpan={3} className="px-4 py-6 text-center text-xs text-muted-foreground">
-                            No items to display. Try a different search.
-                          </td>
-                        </tr>
-                      ) : (
-                        items.map((item) => (
-                          <tr key={item.id} className={css.itemRow}>
-                            <td className="px-4 py-3">
-                              <div className="text-sm font-medium">{item.name}</div>
-                            </td>
-                            <td className={css.priceCell}>{formatCurrency(item.price)}</td>
-                            <td className="px-4 py-3 text-right">
-                              <Button size="sm" onClick={() => onAddItem(item)}>
-                                Add
-                              </Button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          );
-        })()}
-      </CardContent>
-    </Card>
-  );
-}
-
-type OrderPanelProps = {
-  cart: CartLineItem[];
-  onAdjustQuantity: (id: string, delta: number) => void;
-  subtotal: number;
-  tax: number;
-  total: number;
-  tendered: string;
-  onTenderedChange: (value: string) => void;
-  note: string;
-  onNoteChange: (value: string) => void;
-  feedback: PaymentFeedback | null;
-  changeDue: number;
-  onCharge: () => void;
-  onClear: () => void;
-};
-
-function OrderPanel({
-  cart,
-  onAdjustQuantity,
-  subtotal,
-  tax,
-  total,
-  tendered,
-  onTenderedChange,
-  note,
-  onNoteChange,
-  feedback,
-  changeDue,
-  onCharge,
-  onClear,
-}: OrderPanelProps) {
-  const displayChangeDue =
-    feedback?.status === 'success' ? feedback.changeDue : changeDue;
-  const hasOrderDetails =
-    cart.length > 0 ||
-    tendered.trim().length > 0 ||
-    note.trim().length > 0 ||
-    feedback !== null;
-
-  return (
-    <Card className={css.card}>
-      <CardHeader className={css.sectionYTight}>
-        <CardTitle className="text-lg">Order Details</CardTitle>
-      </CardHeader>
-      <CardContent className={cn(css.sectionYLoose, 'px-4 sm:px-6')}>
-        <div className="space-y-2.5 sm:space-y-3 md:landscape:space-y-2">
-          {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground sm:gap-2 sm:p-6 sm:text-sm">
-              <span>No items have been added yet.</span>
-              <span>Add something tasty from the menu.</span>
-            </div>
-          ) : (
-            cart.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-2.5 rounded-lg border p-2.5 sm:gap-3 sm:p-3 md:landscape:gap-2 md:landscape:rounded-md"
-              >
-                <div>
-                  <div className="text-sm font-medium">{item.name}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {item.quantity} x {formatCurrency(item.price)}
-                  </div>
-                </div>
-                <div className="ml-auto flex items-center gap-2.5 sm:gap-4 md:landscape:gap-2">
-                  <div className="flex items-center gap-1 md:landscape:gap-0.5">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => onAdjustQuantity(item.id, -1)}
-                      aria-label={`Decrease ${item.name}`}
-                      className="md:landscape:h-8 md:landscape:w-8"
-                    >
-                      -
-                    </Button>
-                    <span className="w-8 text-center text-sm font-medium md:landscape:w-7 md:landscape:text-xs">
-                      {item.quantity}
-                    </span>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => onAdjustQuantity(item.id, 1)}
-                      aria-label={`Increase ${item.name}`}
-                      className="md:landscape:h-8 md:landscape:w-8"
-                    >
-                      +
-                    </Button>
-                  </div>
-                  <div className="min-w-[5.5rem] whitespace-nowrap text-right text-sm font-semibold tabular-nums sm:min-w-[6rem] md:landscape:min-w-[4.75rem] md:landscape:text-xs">
-                    {formatCurrency(item.price * item.quantity)}
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-        <Separator />
-        <div className={css.sectionY}>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Subtotal</span>
-            <span className="font-medium">{formatCurrency(subtotal)}</span>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Tax ({(TAX_RATE * 100).toFixed(1)}%)</span>
-            <span className="font-medium">{formatCurrency(tax)}</span>
-          </div>
-          <div className="flex items-center justify-between text-sm font-semibold sm:text-base">
-            <span>Total due</span>
-            <span>{formatCurrency(total)}</span>
-          </div>
-        </div>
-        <div className={css.sectionY}>
-          <div className="flex flex-col gap-1 text-sm">
-            <Label htmlFor="amount-tendered" className="text-muted-foreground">
-              Payment received
-            </Label>
-            <Input
-              id="amount-tendered"
-              type="number"
-              min="0"
-              inputMode="decimal"
-              value={tendered}
-              onChange={(event) => onTenderedChange(event.target.value)}
-              placeholder="0.00"
-            />
-          </div>
-          <div className="flex flex-col gap-1 text-sm">
-            <Label htmlFor="ticket-note" className="text-muted-foreground">
-              Ticket note (optional)
-            </Label>
-            <Textarea
-              id="ticket-note"
-              value={note}
-              onChange={(event) => onNoteChange(event.target.value)}
-              placeholder="Add note for the customer"
-              rows={3}
-              className="min-h-[3.5rem] sm:min-h-[4.5rem]"
-            />
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter className="flex flex-col gap-2 sm:gap-3">
-        {feedback ? (
-          <div
-            className={cn('w-full rounded-md border px-2.5 py-2 text-xs sm:px-3 sm:text-sm', {
-              'border-green-500/40 bg-green-500/10 text-emerald-900 dark:text-emerald-100':
-                feedback.status === 'success',
-              'border-destructive/40 bg-destructive/10 text-destructive':
-                feedback.status === 'error',
-            })}
-          >
-            <div className="font-medium">
-              {feedback.status === 'success' ? 'Success' : 'Check ticket'}
-            </div>
-            <div>{feedback.message}</div>
-            {feedback.status === 'success' ? (
-              <div className="mt-1 text-xs text-muted-foreground">
-                Reference: {feedback.reference} | Change due {formatCurrency(feedback.changeDue)}
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-
-        <div className="flex w-full flex-col gap-1.5 sm:flex-row sm:gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            className={css.primaryAction}
-            size="lg"
-            onClick={onClear}
-            disabled={!hasOrderDetails}
-          >
-            Clear order
-          </Button>
-          <Button className={css.primaryAction} size="lg" onClick={onCharge}>
-            Charge
-          </Button>
-          {feedback?.status === 'success' ? (
-            <div className="flex w-full flex-col justify-center rounded-md border border-dashed px-2.5 py-2 text-xs text-muted-foreground sm:w-auto sm:px-3 sm:text-sm">
-              <span>Change due</span>
-              <span className="text-sm font-semibold">{formatCurrency(displayChangeDue)}</span>
-            </div>
-          ) : null}
-        </div>
-      </CardFooter>
-    </Card>
   );
 }
