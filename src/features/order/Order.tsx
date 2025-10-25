@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
-import { Banknote, CreditCard, QrCode } from "lucide-react";
+import { Banknote, CreditCard, QrCode, Trash2 } from "lucide-react";
 
 type Category = {
   id: string;
@@ -266,6 +266,9 @@ export default function Order() {
     "amount"
   );
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
+  const [selectedOrderItemId, setSelectedOrderItemId] = useState<
+    CatalogueItem["id"] | null
+  >(null);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -354,6 +357,16 @@ export default function Order() {
     });
   }
 
+  function handleRemoveFromOrder(itemId: CatalogueItem["id"]) {
+    setOrder((previous) => {
+      const { [itemId]: removed, ...rest } = previous;
+      return removed ? rest : previous;
+    });
+    setSelectedOrderItemId((current) =>
+      current === itemId ? null : current
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-muted/20">
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 pb-8 md:p-6 lg:p-8">
@@ -425,26 +438,64 @@ export default function Order() {
                     </p>
                   ) : (
                     <div className="space-y-4">
-                      {orderItems.map(({ item, quantity }) => (
-                        <div
-                          key={item.id}
-                          className="rounded-lg border border-border/80 bg-muted/40 p-4 shadow-sm"
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-2">
-                              <h3 className="text-base font-semibold">
-                                {item.name}
-                              </h3>
-                              <Badge variant="secondary" className="px-2">
-                                x{quantity}
-                              </Badge>
+                      {orderItems.map(({ item, quantity }) => {
+                        const isSelected = selectedOrderItemId === item.id;
+                        return (
+                          <div
+                            key={item.id}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() =>
+                              setSelectedOrderItemId((current) =>
+                                current === item.id ? null : item.id
+                              )
+                            }
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                setSelectedOrderItemId((current) =>
+                                  current === item.id ? null : item.id
+                                );
+                              }
+                            }}
+                            className={cn(
+                              "rounded-lg border border-border/80 bg-muted/40 p-4 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                              "cursor-pointer",
+                              isSelected && "border-destructive/70 bg-destructive/5"
+                            )}
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-2">
+                                <h3 className="text-base font-semibold">
+                                  {item.name}
+                                </h3>
+                                <Badge variant="secondary" className="px-2">
+                                  x{quantity}
+                                </Badge>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-semibold text-foreground">
+                                  {formatCurrency(item.price * quantity)}
+                                </span>
+                                {isSelected && (
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 text-destructive hover:text-destructive"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      handleRemoveFromOrder(item.id);
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
                             </div>
-                            <span className="text-sm font-semibold text-foreground">
-                              {formatCurrency(item.price * quantity)}
-                            </span>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
