@@ -406,7 +406,7 @@ export default function Order() {
                 <div className="flex-1 overflow-y-auto px-6 py-6">
                   {orderItems.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
-                      Nothing added yet. Tap catalogue items to build the order.
+                      Looks a bit empty! Add something from the catalogue.{" "}
                     </p>
                   ) : (
                     <div className="space-y-4">
@@ -442,7 +442,9 @@ export default function Order() {
                         <Button
                           type="button"
                           size="sm"
-                          variant={discountType === "amount" ? "default" : "outline"}
+                          variant={
+                            discountType === "amount" ? "default" : "outline"
+                          }
                           onClick={() => setDiscountType("amount")}
                           disabled={orderItems.length === 0}
                         >
@@ -451,7 +453,9 @@ export default function Order() {
                         <Button
                           type="button"
                           size="sm"
-                          variant={discountType === "percent" ? "default" : "outline"}
+                          variant={
+                            discountType === "percent" ? "default" : "outline"
+                          }
                           onClick={() => setDiscountType("percent")}
                           disabled={orderItems.length === 0}
                         >
@@ -468,7 +472,9 @@ export default function Order() {
                       onChange={(event) => {
                         const { value } = event.target;
                         const normalizedValue =
-                          value.length > 1 && value.startsWith("0") && !value.startsWith("0.")
+                          value.length > 1 &&
+                          value.startsWith("0") &&
+                          !value.startsWith("0.")
                             ? value.replace(/^0+(?=\d)/, "")
                             : value;
                         if (normalizedValue !== value) {
