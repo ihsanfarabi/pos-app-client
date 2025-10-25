@@ -52,191 +52,194 @@ const catalogue: CatalogueItem[] = [
   {
     id: "americano",
     name: "Americano",
-    price: 4.25,
+    price: 4250,
     categoryId: "coffee",
   },
   {
     id: "flat-white",
     name: "Flat White",
-    price: 5.25,
+    price: 5250,
     categoryId: "coffee",
   },
   {
     id: "cortado",
     name: "Cortado",
-    price: 4.75,
+    price: 4750,
     categoryId: "coffee",
   },
   {
     id: "iced-latte",
     name: "Iced Latte",
-    price: 5.75,
+    price: 5750,
     categoryId: "coffee",
   },
   {
     id: "mocha",
     name: "Chocolate Mocha",
-    price: 5.95,
+    price: 5950,
     categoryId: "coffee",
   },
   {
     id: "matcha",
     name: "Matcha Latte",
-    price: 6.0,
+    price: 6000,
     categoryId: "tea",
   },
   {
     id: "chai",
     name: "Dirty Chai",
-    price: 5.5,
+    price: 5500,
     categoryId: "tea",
   },
   {
     id: "earl-grey",
     name: "London Fog",
-    price: 4.85,
+    price: 4850,
     categoryId: "tea",
   },
   {
     id: "cold-brew",
     name: "Cold Brew",
-    price: 5.0,
+    price: 5000,
     categoryId: "tea",
   },
   {
     id: "hibiscus-iced",
     name: "Hibiscus Iced Tea",
-    price: 4.5,
+    price: 4500,
     categoryId: "tea",
   },
   {
     id: "croissant",
     name: "Butter Croissant",
-    price: 3.5,
+    price: 3500,
     categoryId: "pastries",
   },
   {
     id: "muffin",
     name: "Blueberry Muffin",
-    price: 3.75,
+    price: 3750,
     categoryId: "pastries",
   },
   {
     id: "chocolate-chip-cookie",
     name: "Chocolate Chunk Cookie",
-    price: 3.25,
+    price: 3250,
     categoryId: "pastries",
   },
   {
     id: "cinnamon-roll",
     name: "Cinnamon Roll",
-    price: 4.25,
+    price: 4250,
     categoryId: "pastries",
   },
   {
     id: "bagel",
     name: "Everything Bagel",
-    price: 4.0,
+    price: 4000,
     categoryId: "pastries",
   },
   {
     id: "club-sandwich",
     name: "Roasted Turkey Club",
-    price: 9.5,
+    price: 9500,
     categoryId: "sandwiches",
   },
   {
     id: "caprese",
     name: "Caprese Ciabatta",
-    price: 8.75,
+    price: 8750,
     categoryId: "sandwiches",
   },
   {
     id: "veggie-wrap",
     name: "Grilled Veggie Wrap",
-    price: 8.25,
+    price: 8250,
     categoryId: "sandwiches",
   },
   {
     id: "prosciutto-panini",
     name: "Prosciutto Panini",
-    price: 10.25,
+    price: 10250,
     categoryId: "sandwiches",
   },
   {
     id: "soup-combo",
     name: "Soup & Half Sandwich",
-    price: 10.0,
+    price: 10000,
     categoryId: "specials",
   },
   {
     id: "pumpkin-latte",
     name: "Pumpkin Spice Latte",
-    price: 6.25,
+    price: 6250,
     categoryId: "specials",
   },
   {
     id: "citrus-fizz",
     name: "Citrus Espresso Fizz",
-    price: 5.9,
+    price: 5900,
     categoryId: "specials",
   },
   {
     id: "tasting-board",
     name: "Chef Tasting Board",
-    price: 14.5,
+    price: 14500,
     categoryId: "specials",
   },
   {
     id: "avocado-toast",
     name: "Avocado Toast",
-    price: 7.25,
+    price: 7250,
     categoryId: "specials",
   },
   {
     id: "berry-breeze",
     name: "Berry Breeze Smoothie",
-    price: 6.5,
+    price: 6500,
     categoryId: "smoothies",
   },
   {
     id: "tropical-sunrise",
     name: "Tropical Sunrise Smoothie",
-    price: 6.75,
+    price: 6750,
     categoryId: "smoothies",
   },
   {
     id: "breakfast-burrito",
     name: "Veggie Breakfast Burrito",
-    price: 8.95,
+    price: 8950,
     categoryId: "breakfast",
   },
   {
     id: "overnight-oats",
     name: "Maple Overnight Oats",
-    price: 5.5,
+    price: 5500,
     categoryId: "breakfast",
   },
   {
     id: "house-blend-beans",
     name: "House Blend Beans (12oz)",
-    price: 15.0,
+    price: 15000,
     categoryId: "merch",
   },
   {
     id: "ceramic-mug",
     name: "Signature Ceramic Mug",
-    price: 18.0,
+    price: 18000,
     categoryId: "merch",
   },
 ];
 
+const currencyFormatter = new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
 function formatCurrency(amount: number) {
-  return amount.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  });
+  return currencyFormatter.format(amount);
 }
 
 export default function Order() {
@@ -471,7 +474,15 @@ export default function Order() {
                       step="0.01"
                       value={Number.isFinite(discount) ? discount : ""}
                       onChange={(event) => {
-                        const parsed = Number.parseFloat(event.target.value);
+                        const { value } = event.target;
+                        const normalizedValue =
+                          value.length > 1 && value.startsWith("0") && !value.startsWith("0.")
+                            ? value.replace(/^0+(?=\d)/, "")
+                            : value;
+                        if (normalizedValue !== value) {
+                          event.target.value = normalizedValue;
+                        }
+                        const parsed = Number.parseFloat(normalizedValue);
                         if (!Number.isFinite(parsed)) {
                           setDiscount(0);
                           return;
@@ -484,14 +495,14 @@ export default function Order() {
                             : sanitized
                         );
                       }}
+                      onKeyDown={(event) => {
+                        if (event.key === ",") {
+                          event.preventDefault();
+                        }
+                      }}
                       placeholder={discountType === "percent" ? "0" : "0.00"}
                       disabled={orderItems.length === 0}
                     />
-                    <p className="text-xs text-muted-foreground">
-                      {discountType === "percent"
-                        ? "Percentage is applied to the subtotal before tax."
-                        : "Amount is deducted from the subtotal before tax."}
-                    </p>
                   </div>
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <span>Subtotal</span>
